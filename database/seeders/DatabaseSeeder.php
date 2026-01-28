@@ -15,6 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed hierarchical location data first
+        $this->call([
+            GovernorateSeeder::class,
+            CitySeeder::class,
+        ]);
+
         // User::factory(10)->create();
 
         User::factory()->create([
