@@ -3,35 +3,52 @@
 ## Entity Relationship Diagram
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│     USERS       │    │   LOCATIONS     │    │     SHOPS       │
-├─────────────────┤    ├─────────────────┤    ├─────────────────┤
-│ id (PK)         │    │ id (PK)         │    │ id (PK)         │
-│ name            │    │ city            │    │ owner_id (FK)   │──┐
-│ email (UNIQUE)  │    │ area            │    │ location_id(FK) │──┼──┐
-│ phone           │    │ latitude        │    │ name            │  │  │
-│ password        │    │ longitude       │    │ description     │  │  │
-│ role            │    │ created_at      │    │ whatsapp_number │  │  │
-│ status          │    │ updated_at      │    │ phone_number    │  │  │
-│ created_at      │    └─────────────────┘    │ is_active       │  │  │
-│ updated_at      │                           │ created_at      │  │  │
-└─────────────────┘                           │ updated_at      │  │  │
-         │                                    └─────────────────┘  │  │
-         └──────────────────────────────────────────────────────────┘  │
-                                                                        │
-                  ┌─────────────────────────────────────────────────────┘
-                  │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   CATEGORIES    │    │ SUBCATEGORIES   │    │    PRODUCTS     │
-├─────────────────┤    ├─────────────────┤    ├─────────────────┤
-│ id (PK)         │    │ id (PK)         │    │ id (PK)         │
-│ name            │    │ category_id(FK) │──┐ │ shop_id (FK)    │──┘
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     USERS       │    │  GOVERNORATES   │    │     CITIES      │    │   LOCATIONS     │
+├─────────────────┤    ├─────────────────┤    ├─────────────────┤    ├─────────────────┤
+│ id (PK)         │    │ id (PK)         │    │ id (PK)         │    │ id (PK)         │
+│ name            │    │ name            │    │ governorate_id  │──┐ │ city_id (FK)    │──┐
+│ email (UNIQUE)  │    │ slug (UNIQUE)   │    │ name            │  │ │ area (nullable) │  │
+│ phone           │    │ created_at      │    │ slug            │  │ │ latitude        │  │
+│ password        │    │ updated_at      │    │ created_at      │  │ │ longitude       │  │
+│ role            │    └─────────────────┘    │ updated_at      │  │ │ created_at      │  │
+│ status          │             │             └─────────────────┘  │ │ updated_at      │  │
+│ created_at      │             └──────────────────────────────────┘ └─────────────────┘  │
+│ updated_at      │                                                           │           │
+└─────────────────┘                                                           │           │
+         │                                                                    │           │
+         │                    ┌─────────────────┐                            │           │
+         │                    │     SHOPS       │                            │           │
+         │                    ├─────────────────┤                            │           │
+         │                    │ id (PK)         │                            │           │
+         └────────────────────│ owner_id (FK)   │                            │           │
+                              │ location_id(FK) │────────────────────────────┘           │
+                              │ name            │                                        │
+                              │ slug (UNIQUE)   │                                        │
+                              │ description     │                                        │
+                              │ whatsapp_number │                                        │
+                              │ phone_number    │                                        │
+                              │ is_active       │                                        │
+                              │ created_at      │                                        │
+                              │ updated_at      │                                        │
+                              └─────────────────┘                                        │
+                                       │                                                 │
+                                       │                                                 │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐                      │
+│   CATEGORIES    │    │ SUBCATEGORIES   │    │    PRODUCTS     │                      │
+├─────────────────┤    ├─────────────────┤    ├─────────────────┤                      │
+│ id (PK)         │    │ id (PK)         │    │ id (PK)         │                      │
+│ name            │    │ category_id(FK) │──┐ │ shop_id (FK)    │──────────────────────┘
 │ slug (UNIQUE)   │    │ name            │  │ │ subcategory_id  │──┐
 │ created_at      │    │ slug (UNIQUE)   │  │ │ name            │  │
 │ updated_at      │    │ created_at      │  │ │ description     │  │
 └─────────────────┘    │ updated_at      │  │ │ price           │  │
-         │              └─────────────────┘  │ │ is_active       │  │
-         └─────────────────────────────────────┘ │ created_at      │  │
+         │              └─────────────────┘  │ │ discount_type   │  │
+         └─────────────────────────────────────┘ │ discount_value  │  │
+                                                │ stock_quantity  │  │
+                                                │ track_stock     │  │
+                                                │ is_active       │  │
+                                                │ created_at      │  │
                                                 │ updated_at      │  │
                                                 └─────────────────┘  │
                                                          │           │
@@ -41,13 +58,14 @@
 ├─────────────────┤    ├─────────────────┤    │    _VALUES      │  │
 │ id (PK)         │    │ id (PK)         │    ├─────────────────┤  │
 │ name            │    │ attribute_id(FK)│──┐ │ product_id (FK) │──┘
-│ created_at      │    │ value           │  │ │ attribute_value │──┐
-│ updated_at      │    │ created_at      │  │ │ _id (FK)        │  │
-└─────────────────┘    │ updated_at      │  │ │ (Composite PK)  │  │
-         │              └─────────────────┘  │ └─────────────────┘  │
-         └─────────────────────────────────────┘                    │
-                                                                    │
-                                              ┌─────────────────────┘
+│ slug (UNIQUE)   │    │ value           │  │ │ attribute_value │──┐
+│ created_at      │    │ created_at      │  │ │ _id (FK)        │  │
+│ updated_at      │    │ updated_at      │  │ │ (Composite PK)  │  │
+└─────────────────┘    └─────────────────┘  │ └─────────────────┘  │
+         │                                  │                    │
+         └──────────────────────────────────┘                    │
+                                                                 │
+                                              ┌──────────────────┘
                                               │
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │     MEDIA       │    │ PRODUCT_STATS   │    │                 │
@@ -55,11 +73,20 @@
 │ id (PK)         │    │ product_id (PK) │──┐ │   RELATIONS     │
 │ model_type      │    │ views_count     │  │ │                 │
 │ model_id        │    │ whatsapp_clicks │  │ │ Media can       │
-│ type            │    │ favorites_count │  │ │ belong to:      │
-│ path            │    │ last_viewed_at  │  │ │ - Shops         │
-│ alt_text        │    │ updated_at      │  │ │ - Products      │
-│ display_order   │    └─────────────────┘  │ │                 │
-│ created_at      │                         │ └─────────────────┘
+│ uuid            │    │ sms_clicks      │  │ │ belong to:      │
+│ collection_name │    │ favorites_count │  │ │ - Shops         │
+│ name            │    │ last_viewed_at  │  │ │ - Products      │
+│ file_name       │    │ created_at      │  │ │                 │
+│ mime_type       │    │ updated_at      │  │ └─────────────────┘
+│ disk            │    └─────────────────┘  │
+│ conversions_disk│                         │
+│ size            │                         │
+│ manipulations   │                         │
+│ custom_properties│                        │
+│ generated_conversions│                    │
+│ responsive_images│                        │
+│ order_column    │                         │
+│ created_at      │                         │
 │ updated_at      │                         │
 └─────────────────┘                         │
          │                                  │
@@ -82,10 +109,34 @@ CREATE TABLE users (
     status ENUM('active', 'suspended') NOT NULL DEFAULT 'active',
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
-    INDEX idx_users_email (email),
-    INDEX idx_users_role (role),
-    INDEX idx_users_status (status)
+
+    INDEX idx_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- GOVERNORATES TABLE
+-- =============================================
+CREATE TABLE governorates (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    slug VARCHAR(30) NOT NULL UNIQUE,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- CITIES TABLE
+-- =============================================
+CREATE TABLE cities (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    governorate_id BIGINT UNSIGNED NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    slug VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+
+    FOREIGN KEY (governorate_id) REFERENCES governorates(id) ON DELETE RESTRICT,
+    UNIQUE KEY unique_governorate_slug (governorate_id, slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -93,17 +144,16 @@ CREATE TABLE users (
 -- =============================================
 CREATE TABLE locations (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    city VARCHAR(100) NOT NULL,
-    area VARCHAR(100) NOT NULL,
+    city_id BIGINT UNSIGNED NOT NULL,
+    area VARCHAR(100) NULL,
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
-    INDEX idx_locations_city (city),
-    INDEX idx_locations_area (area),
-    INDEX idx_locations_coordinates (latitude, longitude),
-    UNIQUE KEY unique_city_area (city, area)
+
+    FOREIGN KEY (city_id) REFERENCES cities(id) ON DELETE RESTRICT,
+    INDEX idx_locations_city (city_id),
+    INDEX idx_locations_city_area (city_id, area)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -114,20 +164,20 @@ CREATE TABLE shops (
     owner_id BIGINT UNSIGNED NOT NULL,
     location_id BIGINT UNSIGNED NOT NULL,
     name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     whatsapp_number VARCHAR(20) NOT NULL,
-    phone_number VARCHAR(20),
+    phone_number VARCHAR(20) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
+
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE RESTRICT,
-    
-    INDEX idx_shops_owner (owner_id),
-    INDEX idx_shops_location (location_id),
-    INDEX idx_shops_active (is_active),
-    INDEX idx_shops_name (name)
+
+    INDEX idx_shops_location_active (location_id, is_active),
+    INDEX idx_shops_owner_active (owner_id, is_active),
+    FULLTEXT idx_shops_search (name, description)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -135,12 +185,10 @@ CREATE TABLE shops (
 -- =============================================
 CREATE TABLE categories (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(30) NOT NULL,
+    slug VARCHAR(30) NOT NULL UNIQUE,
     created_at TIMESTAMP NULL DEFAULT NULL,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
-    
-    INDEX idx_categories_slug (slug)
+    updated_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -149,15 +197,12 @@ CREATE TABLE categories (
 CREATE TABLE subcategories (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     category_id BIGINT UNSIGNED NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(40) NOT NULL,
+    slug VARCHAR(40) NOT NULL UNIQUE,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
-    
-    INDEX idx_subcategories_category (category_id),
-    INDEX idx_subcategories_slug (slug)
+
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -170,19 +215,20 @@ CREATE TABLE products (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NULL,
+    discount_type ENUM('percent', 'amount') NULL,
+    discount_value DECIMAL(10, 2) NULL,
+    stock_quantity INTEGER NOT NULL DEFAULT 0,
+    track_stock BOOLEAN NOT NULL DEFAULT TRUE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
+
     FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE,
     FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE RESTRICT,
-    
-    INDEX idx_products_shop (shop_id),
-    INDEX idx_products_subcategory (subcategory_id),
-    INDEX idx_products_active (is_active),
-    INDEX idx_products_name (name),
-    INDEX idx_products_price (price),
-    INDEX idx_products_created (created_at)
+
+    INDEX idx_products_shop_active_created (shop_id, is_active, created_at),
+    INDEX idx_products_subcategory_active_created (subcategory_id, is_active, created_at),
+    FULLTEXT idx_products_search (name, description)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -190,11 +236,10 @@ CREATE TABLE products (
 -- =============================================
 CREATE TABLE attributes (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(50) NOT NULL,
+    slug VARCHAR(50) NOT NULL UNIQUE,
     created_at TIMESTAMP NULL DEFAULT NULL,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
-    
-    INDEX idx_attributes_name (name)
+    updated_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -206,11 +251,8 @@ CREATE TABLE attribute_values (
     value VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
+
     FOREIGN KEY (attribute_id) REFERENCES attributes(id) ON DELETE CASCADE,
-    
-    INDEX idx_attribute_values_attribute (attribute_id),
-    INDEX idx_attribute_values_value (value),
     UNIQUE KEY unique_attribute_value (attribute_id, value)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -220,32 +262,39 @@ CREATE TABLE attribute_values (
 CREATE TABLE product_attribute_values (
     product_id BIGINT UNSIGNED NOT NULL,
     attribute_value_id BIGINT UNSIGNED NOT NULL,
-    
+
     PRIMARY KEY (product_id, attribute_value_id),
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (attribute_value_id) REFERENCES attribute_values(id) ON DELETE CASCADE,
-    
-    INDEX idx_pav_product (product_id),
-    INDEX idx_pav_attribute_value (attribute_value_id)
+
+    INDEX idx_pav_attribute_value_product (attribute_value_id, product_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
--- MEDIA TABLE (Polymorphic)
+-- MEDIA TABLE (Spatie Media Library)
 -- =============================================
 CREATE TABLE media (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     model_type VARCHAR(255) NOT NULL,
     model_id BIGINT UNSIGNED NOT NULL,
-    type ENUM('logo', 'banner', 'product_image', 'ad') NOT NULL,
-    path VARCHAR(500) NOT NULL,
-    alt_text VARCHAR(255) NULL,
-    display_order TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    uuid CHAR(36) NULL UNIQUE,
+    collection_name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(255) NULL,
+    disk VARCHAR(255) NOT NULL,
+    conversions_disk VARCHAR(255) NULL,
+    size BIGINT UNSIGNED NOT NULL,
+    manipulations JSON NOT NULL,
+    custom_properties JSON NOT NULL,
+    generated_conversions JSON NOT NULL,
+    responsive_images JSON NOT NULL,
+    order_column INTEGER UNSIGNED NULL,
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
+
     INDEX idx_media_model (model_type, model_id),
-    INDEX idx_media_type (type),
-    INDEX idx_media_order (display_order)
+    INDEX idx_media_order (order_column)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================
@@ -255,15 +304,15 @@ CREATE TABLE product_stats (
     product_id BIGINT UNSIGNED PRIMARY KEY,
     views_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
     whatsapp_clicks BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    sms_clicks BIGINT UNSIGNED NOT NULL DEFAULT 0,
     favorites_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
     last_viewed_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    
+
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    
+
     INDEX idx_product_stats_views (views_count),
-    INDEX idx_product_stats_whatsapp (whatsapp_clicks),
-    INDEX idx_product_stats_favorites (favorites_count),
     INDEX idx_product_stats_last_viewed (last_viewed_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
@@ -271,54 +320,95 @@ CREATE TABLE product_stats (
 ## Key Design Decisions & Performance Optimizations
 
 ### 1. **Indexing Strategy**
-- **Location-based queries**: Composite index on `(latitude, longitude)` for proximity searches
-- **Search optimization**: Indexes on `name` fields for text searches
-- **Filter optimization**: Indexes on `is_active`, `status`, `role` for common filters
-- **Relationship optimization**: Foreign key indexes for efficient joins
+
+- **Hierarchical location queries**: Optimized indexes for governorate → city → location relationships
+- **Search optimization**: Fulltext indexes on shop and product names/descriptions (MySQL only)
+- **Filter optimization**: Composite indexes on `(location_id, is_active)`, `(shop_id, is_active, created_at)`
+- **Attribute filtering**: Reverse index `(attribute_value_id, product_id)` for efficient attribute-based product filtering
+- **Analytics queries**: Focused indexes on `views_count` and `last_viewed_at` for performance
 
 ### 2. **Data Types & Constraints**
+
 - **Coordinates**: `DECIMAL(10,8)` and `DECIMAL(11,8)` for precise GPS coordinates
-- **Price**: `DECIMAL(10,2)` for accurate monetary values
+- **Price & discounts**: `DECIMAL(10,2)` for accurate monetary values
 - **Phone numbers**: `VARCHAR(20)` to accommodate international formats
-- **ENUMs**: Used for fixed value sets (role, status, media type)
+- **Slugs**: Translation-ready slugs for categories, subcategories, and attributes
+- **ENUMs**: Used for fixed value sets (role, status, discount_type)
 
-### 3. **Scalability Considerations**
-- **City expansion**: `locations` table ready for multiple cities
-- **Translation ready**: Schema can accommodate translation tables later
-- **Analytics separation**: `product_stats` separate for performance
-- **Polymorphic media**: Flexible attachment system
+### 3. **Translation Architecture**
 
-### 4. **Data Integrity**
+- **Slug-based translations**: All major entities have slugs for future translation support
+- **Consistent naming**: Slugs serve as translation keys across all languages
+- **Future-ready**: Schema prepared for translation tables or JSON columns
+- **SEO-friendly**: Slugs enable readable URLs for shops and products
+
+### 4. **Analytics & Performance**
+
+- **Separate stats table**: `product_stats` isolated for high-frequency updates
+- **SMS tracking**: Added `sms_clicks` for Egyptian market preferences
+- **Optimized counters**: `BIGINT UNSIGNED` for high-traffic scenarios
+- **Minimal indexing**: Only essential indexes to avoid write performance impact
+
+### 5. **Data Integrity**
+
 - **Cascade deletes**: User deletion removes shops and products
 - **Restrict deletes**: Location/category deletion prevented if referenced
-- **Unique constraints**: Email, slugs, and attribute-value combinations
-- **Foreign key constraints**: Maintain referential integrity
+- **Unique constraints**: Proper uniqueness for slugs, emails, and attribute combinations
+- **Foreign key constraints**: Maintain referential integrity across all relationships
 
-### 5. **Future Expansion Hooks**
-- **Multi-city**: Location table structure supports expansion
-- **Translations**: Can add `*_translations` tables later
-- **Advanced analytics**: Stats table can be extended
-- **Media types**: ENUM can be expanded for new media types
+### 6. **Scalability Considerations**
+
+- **Hierarchical locations**: Ready for multi-city expansion with governorate → city → location structure
+- **Polymorphic media**: Flexible Spatie Media Library integration for shops and products
+- **Pivot table optimization**: Efficient product-attribute relationships with smart indexing
+- **Stock management**: Built-in inventory tracking with optional stock monitoring
+
+### 7. **Future Expansion Hooks**
+
+- **Multi-city architecture**: Location hierarchy supports unlimited city expansion
+- **Translation system**: Slug-based keys ready for multilingual content
+- **Advanced analytics**: Stats table extensible for additional metrics
+- **Media collections**: Spatie Media Library supports unlimited file types and conversions
 
 ### 6. **Query Performance Patterns**
+
 ```sql
--- Location-based shop discovery
-SELECT s.*, l.city, l.area 
-FROM shops s 
-JOIN locations l ON s.location_id = l.id 
-WHERE l.city = 'Cairo' AND s.is_active = 1;
+-- Hierarchical location-based shop discovery
+SELECT s.*, l.area, c.name as city_name, g.name as governorate_name
+FROM shops s
+JOIN locations l ON s.location_id = l.id
+JOIN cities c ON l.city_id = c.id
+JOIN governorates g ON c.governorate_id = g.id
+WHERE c.slug = 'cairo' AND s.is_active = 1;
 
--- Product search with attributes
-SELECT p.*, s.name as shop_name, sc.name as subcategory 
-FROM products p 
-JOIN shops s ON p.shop_id = s.id 
-JOIN subcategories sc ON p.subcategory_id = sc.id 
-WHERE p.is_active = 1 AND s.is_active = 1;
+-- Multi-city expansion ready
+SELECT s.*, l.area, c.name as city_name, g.name as governorate_name
+FROM shops s
+JOIN locations l ON s.location_id = l.id
+JOIN cities c ON l.city_id = c.id
+JOIN governorates g ON c.governorate_id = g.id
+WHERE g.slug = 'cairo' AND s.is_active = 1;
 
--- Popular products by stats
-SELECT p.*, ps.views_count, ps.whatsapp_clicks 
-FROM products p 
-JOIN product_stats ps ON p.id = ps.product_id 
+-- Product search with hierarchical location context
+SELECT p.*, s.name as shop_name, sc.name as subcategory,
+       l.area, c.name as city_name, g.name as governorate_name
+FROM products p
+JOIN shops s ON p.shop_id = s.id
+JOIN locations l ON s.location_id = l.id
+JOIN cities c ON l.city_id = c.id
+JOIN governorates g ON c.governorate_id = g.id
+JOIN subcategories sc ON p.subcategory_id = sc.id
+WHERE p.is_active = 1 AND s.is_active = 1 AND c.slug = 'cairo';
+
+-- Popular products by stats with location
+SELECT p.*, ps.views_count, ps.whatsapp_clicks,
+       c.name as city_name, g.name as governorate_name
+FROM products p
+JOIN product_stats ps ON p.id = ps.product_id
+JOIN shops s ON p.shop_id = s.id
+JOIN locations l ON s.location_id = l.id
+JOIN cities c ON l.city_id = c.id
+JOIN governorates g ON c.governorate_id = g.id
 ORDER BY ps.views_count DESC;
 ```
 

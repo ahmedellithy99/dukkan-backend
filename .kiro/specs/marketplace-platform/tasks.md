@@ -6,17 +6,17 @@ This implementation plan breaks down the marketplace platform development into d
 
 ## Tasks
 
-- [ ] 1. Set up database schema and core models
+- [x] 1. Set up database schema and core models
   - Create all database migrations following the normalized schema design
   - Implement Eloquent models with relationships and scopes
   - Set up model factories for testing data generation
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
 
-- [ ] 1.1 Write property test for user registration
+- [x] 1.1 Write property test for user registration
   - **Property 1: User Registration and Authentication**
   - **Validates: Requirements 1.1, 1.2, 1.5**
 
-- [ ] 1.2 Write property test for location management
+- [x] 1.2 Write property test for location management
   - **Property 3: Location Management Integrity**
   - **Validates: Requirements 2.1, 2.2, 2.3**
 

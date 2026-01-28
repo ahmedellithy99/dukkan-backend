@@ -122,9 +122,9 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 #### Acceptance Criteria
 
 1. WHEN customers search by text, THE System SHALL match product names and descriptions
-3. WHEN customers filter by category, THE System SHALL return products from selected categories and subcategories
-4. WHEN customers filter by attributes, THE System SHALL return products matching selected attribute values
-5. THE System SHALL support combining multiple filters and sorting options
+2. WHEN customers filter by category, THE System SHALL return products from selected categories and subcategories
+3. WHEN customers filter by attributes, THE System SHALL return products matching selected attribute values
+4. THE System SHALL support combining multiple filters and sorting options
 
 ### Requirement 10: API Response Format
 
