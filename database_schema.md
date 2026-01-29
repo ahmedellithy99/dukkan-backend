@@ -23,6 +23,7 @@
          │                    │ id (PK)         │                            │           │
          └────────────────────│ owner_id (FK)   │                            │           │
                               │ location_id(FK) │────────────────────────────┘           │
+                              │ (UNIQUE)        │                                        │
                               │ name            │                                        │
                               │ slug (UNIQUE)   │                                        │
                               │ description     │                                        │
@@ -162,7 +163,7 @@ CREATE TABLE locations (
 CREATE TABLE shops (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     owner_id BIGINT UNSIGNED NOT NULL,
-    location_id BIGINT UNSIGNED NOT NULL,
+    location_id BIGINT UNSIGNED NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
@@ -213,6 +214,7 @@ CREATE TABLE products (
     shop_id BIGINT UNSIGNED NOT NULL,
     subcategory_id BIGINT UNSIGNED NOT NULL,
     name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NULL,
     discount_type ENUM('percent', 'amount') NULL,
@@ -226,6 +228,7 @@ CREATE TABLE products (
     FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE,
     FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE RESTRICT,
 
+    UNIQUE KEY unique_shop_slug (shop_id, slug),
     INDEX idx_products_shop_active_created (shop_id, is_active, created_at),
     INDEX idx_products_subcategory_active_created (subcategory_id, is_active, created_at),
     FULLTEXT idx_products_search (name, description)
@@ -338,6 +341,7 @@ CREATE TABLE product_stats (
 ### 3. **Translation Architecture**
 
 - **Slug-based translations**: All major entities have slugs for future translation support
+- **Shop-scoped product slugs**: Products have unique slugs within each shop, enabling SEO-friendly URLs like `/shops/shop-name/products/product-slug`
 - **Consistent naming**: Slugs serve as translation keys across all languages
 - **Future-ready**: Schema prepared for translation tables or JSON columns
 - **SEO-friendly**: Slugs enable readable URLs for shops and products
@@ -370,7 +374,30 @@ CREATE TABLE product_stats (
 - **Advanced analytics**: Stats table extensible for additional metrics
 - **Media collections**: Spatie Media Library supports unlimited file types and conversions
 
-### 6. **Query Performance Patterns**
+## Database Relationships
+
+### Core Relationships
+
+- **One-to-Many**: User → Shops (a user can own multiple shops)
+- **One-to-One**: Location ↔ Shop (each location has exactly one shop, each shop has one unique location)
+- **One-to-Many**: Shop → Products (a shop can have multiple products)
+- **Many-to-Many**: Products ↔ AttributeValues (products can have multiple attribute values)
+- **Polymorphic**: Spatie Media → (Shops, Products) with automatic WebP conversions
+
+### Hierarchical Location Structure
+
+- **Governorate → Cities**: One-to-Many (governorates contain multiple cities)
+- **City → Locations**: One-to-Many (cities contain multiple user-generated locations)
+- **Location → Shop**: One-to-One (each location is unique to one shop)
+
+### Business Logic Implications
+
+- **Unique Shop Locations**: Each shop must have its own unique location record with specific GPS coordinates
+- **Shared Areas**: Multiple shops can be in the same area/neighborhood, but each has distinct coordinates
+- **Location Ownership**: Locations are tied to shops and cannot be shared between shops
+- **Scalable Geography**: The hierarchical structure supports expansion to multiple governorates and cities
+
+### 8. **Query Performance Patterns**
 
 ```sql
 -- Hierarchical location-based shop discovery
