@@ -16,10 +16,10 @@ return new class() extends Migration
             $table->id();
 
             $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('location_id')->constrained('locations')->restrictOnDelete();
+            $table->foreignId('location_id')->unique()->constrained('locations')->restrictOnDelete();
 
             $table->string('name');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
 
             $table->string('phone_number', 20);
@@ -36,8 +36,6 @@ return new class() extends Migration
             if (DB::connection()->getDriverName() === 'mysql') {
                 $table->fullText(['name', 'description']);
             }
-
-            $table->unique('slug');
         });
     }
 
