@@ -20,7 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'role',
+        'status',
     ];
 
     /**
@@ -44,5 +47,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+    public function shops()
+    {
+        return $this->hasMany(Shop::class, 'owner_id');
+    }
+
+    // Scopes
+    public function scopeShopOwners($query)
+    {
+        return $query->where('role', 'shop_owner');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
     }
 }
