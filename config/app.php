@@ -43,6 +43,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | API Version
+    |--------------------------------------------------------------------------
+    |
+    | This value represents the current API version for the application.
+    | It's used in API responses to maintain version consistency and
+    | help with API versioning strategy.
+    |
+    */
+
+    'api_version' => env('API_VERSION', 'v1.0.0'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |
