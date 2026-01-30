@@ -26,6 +26,7 @@ Thumbs.db
 # IDE Helper files (if using barryvdh/laravel-ide-helper)
 _ide_helper.php
 _ide_helper_models.php
+_ide_helper_macros.php
 .phpstorm.meta.php
 
 # Kiro IDE files (personal development environment)
