@@ -30,3 +30,9 @@ _ide_helper_models.php
 
 # Kiro IDE files (personal development environment)
 /.kiro/
+
+# Documentation files (development notes)
+domain-exception-pattern.md
+controller-pattern.md
+exception-pattern.md
+response-macro-pattern.md
