@@ -9,6 +9,9 @@ abstract class BaseFilter
 {
     protected Request $request;
     protected Builder $builder;
+    
+    // Whitelist of allowed filters
+    protected array $allowed = [];
 
     public function __construct(Request $request)
     {
@@ -30,11 +33,17 @@ abstract class BaseFilter
 
     protected function getFilters(): array
     {
-        return $this->request->all();
+        return $this->allowed
+            ? $this->request->only($this->allowed)
+            : $this->request->all();
     }
 
     protected function hasValue($value): bool
     {
-        return $value !== null && $value !== '' && $value !== [];
+        if (is_array($value)) {
+            return count(array_filter($value, fn($v) => $v !== null && $v !== '')) > 0;
+        }
+        
+        return $value !== null && $value !== '';
     }
 }
