@@ -7,7 +7,7 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 ## Glossary
 
 - **System**: The Dukkan Backend API
-- **Shop_Owner**: A user who owns and manages a shop on the platform
+- **Vendor**: A user who owns and manages a shop on the platform
 - **Customer**: An end user browsing products (frontend user)
 - **Admin**: A platform administrator with full system access
 - **Location**: A geographical area defined by city and area
@@ -21,37 +21,37 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 
 ### Requirement 1: User Management
 
-**User Story:** As a shop owner, I want to register and manage my account, so that I can list my products on the platform.
+**User Story:** As a vendor, I want to register and manage my account, so that I can list my products on the platform.
 
 #### Acceptance Criteria
 
-1. WHEN a shop owner provides valid registration details, THE System SHALL create a new user account with shop_owner role
-2. WHEN a shop owner attempts to register with an existing email, THE System SHALL prevent registration and return an error
-3. WHEN a shop owner logs in with valid credentials, THE System SHALL authenticate them and provide access tokens
+1. WHEN a vendor provides valid registration details, THE System SHALL create a new user account with vendor role
+2. WHEN a vendor attempts to register with an existing email, THE System SHALL prevent registration and return an error
+3. WHEN a vendor logs in with valid credentials, THE System SHALL authenticate them and provide access tokens
 4. WHEN an admin manages users, THE System SHALL allow role assignment and status management
 5. THE System SHALL hash and securely store all user passwords
 
 ### Requirement 2: Location Management
 
-**User Story:** As a shop owner, I want to create or select my shop's location, so that customers can find me geographically.
+**User Story:** As a vendor, I want to create or select my shop's location, so that customers can find me geographically.
 
 #### Acceptance Criteria
 
-1. WHEN a shop owner creates a shop, THE System SHALL allow them to create a new location or select from existing ones
-2. WHEN a shop owner creates a location, THE System SHALL store city, area, and GPS coordinates
+1. WHEN a vendor creates a shop, THE System SHALL allow them to create a new location or select from existing ones
+2. WHEN a vendor creates a location, THE System SHALL store city, area, and GPS coordinates
 3. THE System SHALL validate GPS coordinates are within acceptable ranges
 4. WHEN locations are queried, THE System SHALL support filtering by city and area
 5. THE System SHALL maintain location data for proximity-based searches
 
 ### Requirement 3: Shop Management
 
-**User Story:** As a shop owner, I want to create and manage my shop profile, so that customers can find and contact me.
+**User Story:** As a vendor, I want to create and manage my shop profile, so that customers can find and contact me.
 
 #### Acceptance Criteria
 
-1. WHEN a shop owner creates a shop, THE System SHALL associate it with their user account and selected location
+1. WHEN a vendor creates a shop, THE System SHALL associate it with their user account and selected location
 2. WHEN shop details are provided, THE System SHALL validate WhatsApp number format and store contact information
-3. WHEN a shop owner updates their shop, THE System SHALL maintain data integrity and update timestamps
+3. WHEN a vendor updates their shop, THE System SHALL maintain data integrity and update timestamps
 4. THE System SHALL allow shop owners to activate or deactivate their shops
 5. WHEN shops are queried, THE System SHALL filter by active status and location
 
@@ -69,11 +69,11 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 
 ### Requirement 5: Product Catalog
 
-**User Story:** As a shop owner, I want to list my products with details and attributes, so that customers can discover them.
+**User Story:** As a vendor, I want to list my products with details and attributes, so that customers can discover them.
 
 #### Acceptance Criteria
 
-1. WHEN a shop owner creates a product, THE System SHALL associate it with their shop and selected subcategory
+1. WHEN a vendor creates a product, THE System SHALL associate it with their shop and selected subcategory
 2. WHEN product details are provided, THE System SHALL validate and store name, description, and optional price
 3. THE System SHALL allow products to be activated or deactivated
 4. WHEN products are queried, THE System SHALL support filtering by shop, category, subcategory, and active status
@@ -81,7 +81,7 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 
 ### Requirement 6: Attribute System
 
-**User Story:** As a shop owner, I want to assign attributes to my products, so that customers can filter by specific properties.
+**User Story:** As a vendor, I want to assign attributes to my products, so that customers can filter by specific properties.
 
 #### Acceptance Criteria
 
@@ -93,7 +93,7 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 
 ### Requirement 7: Media Management
 
-**User Story:** As a shop owner, I want to upload images for my shop and products, so that customers can see visual representations.
+**User Story:** As a vendor, I want to upload images for my shop and products, so that customers can see visual representations.
 
 #### Acceptance Criteria
 
@@ -105,7 +105,7 @@ Dukkan Backend is a local marketplace platform API that connects customers with 
 
 ### Requirement 8: Analytics Tracking
 
-**User Story:** As a shop owner, I want to track product performance, so that I can understand customer interest.
+**User Story:** As a vendor, I want to track product performance, so that I can understand customer interest.
 
 #### Acceptance Criteria
 

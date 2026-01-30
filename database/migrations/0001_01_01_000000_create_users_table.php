@@ -18,7 +18,7 @@ return new class() extends Migration
             $table->string('phone', 20);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['shop_owner', 'admin'])->default('shop_owner');
+            $table->enum('role', ['vendor', 'admin'])->default('vendor');
             $table->enum('status', ['active', 'suspended'])->default('active');
             $table->rememberToken();
             $table->timestamps();

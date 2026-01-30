@@ -57,9 +57,9 @@ class User extends Authenticatable
     }
 
     // Scopes
-    public function scopeShopOwners($query)
+    public function scopeVendors($query)
     {
-        return $query->where('role', 'shop_owner');
+        return $query->where('role', 'vendor');
     }
 
     public function scopeActive($query)

@@ -243,7 +243,7 @@ tests/
 
 - Authentication and authorization
 - Shop ownership management
-- Role-based access (shop_owner, admin)
+- Role-based access (vendor, admin)
 
 ### Locations
 

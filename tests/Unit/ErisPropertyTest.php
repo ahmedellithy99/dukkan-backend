@@ -25,7 +25,7 @@ class ErisPropertyTest extends TestCase
             Generator\string(),
             Generator\int(),
             Generator\string(),
-            Generator\elements(['shop_owner', 'admin']),
+            Generator\elements(['vendor', 'admin']),
             Generator\elements(['active', 'suspended'])
         )->then(function ($name, $emailSeed, $password, $role, $status) {
             // Skip empty strings

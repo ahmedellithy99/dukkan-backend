@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'phone' => '+20'.fake()->numerify('##########'),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => fake()->randomElement(['shop_owner', 'admin']),
+            'role' => fake()->randomElement(['vendor', 'admin']),
             'status' => fake()->randomElement(['active', 'suspended']),
             'remember_token' => Str::random(10),
         ];
@@ -46,12 +46,12 @@ class UserFactory extends Factory
     }
 
     /**
-     * Create a shop owner user.
+     * Create a vendor user.
      */
-    public function shopOwner(): static
+    public function vendor(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'shop_owner',
+            'role' => 'vendor',
             'status' => 'active',
         ]);
     }

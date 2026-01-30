@@ -109,7 +109,7 @@ class UserRegistrationPropertyTest extends TestCase
      */
     public function test_role_assignment_property()
     {
-        $roles = ['shop_owner', 'admin'];
+        $roles = ['vendor', 'admin'];
 
         for ($i = 0; $i < 50; $i++) {
             $role = $roles[array_rand($roles)];
@@ -121,8 +121,8 @@ class UserRegistrationPropertyTest extends TestCase
             $this->assertEquals($role, $user->role);
 
             // Test scopes work correctly
-            if ($role === 'shop_owner') {
-                $this->assertTrue(User::shopOwners()->where('id', $user->id)->exists());
+            if ($role === 'vendor') {
+                $this->assertTrue(User::vendors()->where('id', $user->id)->exists());
             }
         }
     }
@@ -189,7 +189,7 @@ class UserRegistrationPropertyTest extends TestCase
 
     private function generateRandomRole(): string
     {
-        $roles = ['shop_owner', 'admin'];
+        $roles = ['vendor', 'admin'];
 
         return $roles[array_rand($roles)];
     }

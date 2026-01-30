@@ -106,7 +106,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('shop_owner', 'admin') NOT NULL DEFAULT 'shop_owner',
+    role ENUM('vendor', 'admin') NOT NULL DEFAULT 'vendor',
     status ENUM('active', 'suspended') NOT NULL DEFAULT 'active',
     created_at TIMESTAMP NULL DEFAULT NULL,
     updated_at TIMESTAMP NULL DEFAULT NULL,
