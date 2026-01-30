@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Vendor\AuthController;
+use App\Http\Controllers\Api\V1\Vendor\LocationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +22,8 @@ Route::prefix('vendor')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
+        
+        // Location update only
+        Route::put('locations/{location}', [LocationController::class, 'update']);
     });
 });

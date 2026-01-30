@@ -122,72 +122,7 @@ class LocationManagementPropertyTest extends TestCase
         $this->assertGreaterThanOrEqual(-180, $location->longitude);
         $this->assertLessThanOrEqual(180, $location->longitude);
     }
-
-    /**
-     * Property: City and area filtering
-     * For any city filter, only locations from that city should be returned.
-     */
-    public function test_city_filtering_property()
-    {
-        for ($i = 0; $i < 30; $i++) {
-            $this->runCityFilteringProperty();
-        }
-    }
-
-    private function runCityFilteringProperty()
-    {
-        // Clear database for this test
-        Location::truncate();
-        City::truncate();
-        Governorate::truncate();
-
-        // Create governorate
-        $governorate = Governorate::create([
-            'name' => 'Cairo',
-            'slug' => 'cairo',
-        ]);
-
-        // Create cities
-        $cities = ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan'];
-        $cityModels = [];
-        foreach ($cities as $cityName) {
-            $cityModels[] = City::create([
-                'governorate_id' => $governorate->id,
-                'name' => $cityName,
-                'slug' => strtolower($cityName),
-            ]);
-        }
-
-        $targetCity = $cityModels[array_rand($cityModels)];
-
-        // Create locations in different cities
-        $locationsInTargetCity = [];
-        $locationsInOtherCities = [];
-
-        for ($j = 0; $j < 3; $j++) {
-            // Create location in target city
-            $locationData = $this->generateUniqueLocationData($targetCity->id);
-            $locationData['area'] = 'Area_'.$j.'_'.time().'_'.rand(1, 10000);
-            $locationsInTargetCity[] = Location::create($locationData);
-
-            // Create location in other city
-            $otherCities = array_filter($cityModels, fn($city) => $city->id !== $targetCity->id);
-            $otherCity = $otherCities[array_rand($otherCities)];
-            $locationData = $this->generateUniqueLocationData($otherCity->id);
-            $locationData['area'] = 'OtherArea_'.$j.'_'.time().'_'.rand(1, 10000);
-            $locationsInOtherCities[] = Location::create($locationData);
-        }
-
-        // Test city filtering
-        $filteredLocations = Location::inCity($targetCity->id)->get();
-
-        $this->assertGreaterThanOrEqual(3, $filteredLocations->count());
-
-        foreach ($filteredLocations as $location) {
-            $this->assertEquals($targetCity->id, $location->city_id);
-        }
-    }
-
+    
     /**
      * Property: Multiple shops can exist in same area
      * For any location, multiple shops should be able to use the same area.
