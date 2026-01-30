@@ -21,6 +21,11 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
         ]);
 
+        // Seed admin users
+        $this->call([
+            AdminSeeder::class,
+        ]);
+
         // User::factory(10)->create();
 
         User::factory()->create([
