@@ -27,3 +27,6 @@ Thumbs.db
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php
+
+# Kiro IDE files (personal development environment)
+/.kiro/
