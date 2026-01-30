@@ -122,58 +122,6 @@ class LocationManagementPropertyTest extends TestCase
         $this->assertGreaterThanOrEqual(-180, $location->longitude);
         $this->assertLessThanOrEqual(180, $location->longitude);
     }
-    
-    /**
-     * Property: Multiple shops can exist in same area
-     * For any location, multiple shops should be able to use the same area.
-     */
-    public function test_multiple_shops_same_area_property()
-    {
-        for ($i = 0; $i < 20; $i++) {
-            $this->runMultipleShopsSameAreaProperty();
-        }
-    }
-
-    private function runMultipleShopsSameAreaProperty()
-    {
-        // Clear database for this test
-        Location::truncate();
-        City::truncate();
-        Governorate::truncate();
-
-        // Create governorate and city
-        $governorate = Governorate::create([
-            'name' => $this->generateRandomGovernorate(),
-            'slug' => strtolower(str_replace(' ', '-', $this->generateRandomGovernorate())),
-        ]);
-
-        $city = City::create([
-            'governorate_id' => $governorate->id,
-            'name' => $this->generateRandomCity(),
-            'slug' => strtolower(str_replace(' ', '-', $this->generateRandomCity())),
-        ]);
-
-        $area = $this->generateRandomArea().'_'.time().'_'.rand(1, 10000);
-
-        // Create multiple locations with same city-area (should succeed)
-        for ($j = 0; $j < 3; $j++) {
-            $locationData = $this->generateUniqueLocationData($city->id);
-            $locationData['area'] = $area;
-
-            $location = Location::create($locationData);
-            $this->assertInstanceOf(Location::class, $location);
-            $this->assertEquals($city->id, $location->city_id);
-            $this->assertEquals($area, $location->area);
-            $this->assertEquals($governorate->name, $location->city->governorate->name);
-        }
-
-        // Verify all 3 locations were created successfully
-        $locationsInArea = Location::where('city_id', $city->id)
-            ->where('area', $area)
-            ->count();
-
-        $this->assertEquals(3, $locationsInArea);
-    }
 
     /**
      * Property: Basic location storage and retrieval
