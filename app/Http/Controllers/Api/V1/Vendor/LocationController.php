@@ -23,9 +23,7 @@ class LocationController extends Controller
      */
     public function update(UpdateLocationRequest $request, Location $location): JsonResponse
     {
-        $this->locationService->updateLocation($location, $request->validated(), $request->user());
-        $location->refresh();
-        $location->load(['city.governorate']);
+        $location = $this->locationService->updateLocation($location, $request->validated());
 
         return response()->api(new LocationResource($location));
     }

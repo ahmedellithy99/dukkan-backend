@@ -210,8 +210,8 @@ class LocationUpdateTest extends TestCase
                 ->assertJson([
                     'success' => false,
                     'error' => [
-                        'code' => 'LOCATION_ACCESS_DENIED',
-                        'message' => 'Access denied to location.',
+                        'code' => 'FORBIDDEN',
+                        'message' => 'Forbidden.',
                     ]
                 ]);
 

@@ -17,13 +17,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('vendor')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
-    
+
     // Protected vendor routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
-        
+
         // Location update only
-        Route::put('locations/{location}', [LocationController::class, 'update']);
+        Route::put('locations/{location}', [LocationController::class, 'update'])
+            ->middleware('can:update,location');;
     });
 });

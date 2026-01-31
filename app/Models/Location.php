@@ -12,7 +12,6 @@ class Location extends Model
     protected $fillable = [
         'city_id',
         'area',
-        'address',
         'latitude',
         'longitude',
     ];
