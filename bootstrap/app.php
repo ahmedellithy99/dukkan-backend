@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Api\ApiExceptionMapper;
+use App\Providers\AuthServiceProvider;
 use App\Providers\ResponseMacroServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,5 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withProviders([
         ResponseMacroServiceProvider::class,
+        AuthServiceProvider::class,
     ])
     ->create();
