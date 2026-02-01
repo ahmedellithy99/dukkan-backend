@@ -28,17 +28,6 @@ class ApiExceptionMapper
             }
         });
 
-        $exceptions->render(function (ValidationException $e, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->apiError(
-                    'Validation failed.',
-                    'VALIDATION_FAILED',
-                    $e->errors(),
-                    422
-                );
-            }
-        });
-
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->apiError('Unauthenticated.', 'UNAUTHENTICATED', [], 401);
@@ -54,14 +43,6 @@ class ApiExceptionMapper
         $exceptions->render(function (ModelNotFoundException|NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->apiError('Resource not found.', 'NOT_FOUND', [], 404);
-            }
-        });
-
-        // Catch-all
-        $exceptions->render(function (Throwable $e, Request $request) {
-            if ($request->expectsJson()) {
-                report($e);
-                return response()->apiError('Server error.', 'SERVER_ERROR', [], 500);
             }
         });
     }
