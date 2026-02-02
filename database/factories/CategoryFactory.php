@@ -23,7 +23,6 @@ class CategoryFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => \Illuminate\Support\Str::slug($name) . '-' . $this->faker->unique()->randomNumber(5),
         ];
     }
 }

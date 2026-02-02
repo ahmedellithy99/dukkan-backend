@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Website\ShopController;
+use App\Http\Controllers\Api\V1\Website\CategoryController;
+use App\Http\Controllers\Api\V1\Website\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,3 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
+
+Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+Route::apiResource('subcategories', SubcategoryController::class)->only(['index', 'show']);
