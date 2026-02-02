@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Vendor\AuthController;
 use App\Http\Controllers\Api\V1\Vendor\LocationController;
+use App\Http\Controllers\Api\V1\Vendor\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +24,11 @@ Route::prefix('vendor')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
 
-        // Location update only
         Route::put('locations/{location}', [LocationController::class, 'update'])
-            ->middleware('can:update,location');;
+            ->middleware('can:update,location');
+
+        Route::apiResource('/my-shops', ShopController::class);
+        Route::post('my-shops/{shop}/restore', [ShopController::class, 'restore'])
+            ->withTrashed();
     });
 });

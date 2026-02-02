@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -13,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Shop extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasSlug;
+    use HasFactory, InteractsWithMedia, HasSlug, SoftDeletes, Filterable;
 
     protected $fillable = [
         'owner_id',
@@ -83,11 +85,16 @@ class Shop extends Model implements HasMedia
     // Media Conversions
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('logo_thumb_webp')
-            ->fit(Fit::Crop, 300, 300)
-            ->format('webp')
-            ->quality(80)
-            ->performOnCollections('logo')
-            ->nonQueued();
+        // Only register conversions if enabled in environment and GD/Imagick is properly configured
+        if (config('media-library.enable_conversions', false)) {
+            // Single thumbnail conversion in WebP format
+            // This will create: logo-thumb.webp
+            $this->addMediaConversion('thumb')
+                ->fit(Fit::Crop, 300, 300)
+                ->format('webp')
+                ->quality(80)
+                ->performOnCollections('logo')
+                ->nonQueued();
+        }
     }
 }

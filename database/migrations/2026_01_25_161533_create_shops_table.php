@@ -26,6 +26,9 @@ return new class() extends Migration
             $table->string('whatsapp_number', 20);
 
             $table->boolean('is_active')->default(true);
+            
+            $table->softDeletes();
+            
             $table->timestamps();
 
             // Core discovery + vendor listing

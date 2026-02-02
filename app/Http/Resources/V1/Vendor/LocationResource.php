@@ -9,8 +9,6 @@ class LocationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
@@ -22,9 +20,11 @@ class LocationResource extends JsonResource
             'full_address' => $this->full_address,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            
-            // Relationships
-            'city' => new CityResource($this->whenLoaded('city')),
+
+            // Include relationships when loaded
+            'city' => $this->whenLoaded('city', function () {
+                return new CityResource($this->city);
+            }),
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Resources\V1\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CityResource extends JsonResource
+class ProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,11 @@ class CityResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-
-            // Include relationships when loaded
-            'governorate' => $this->whenLoaded('governorate', function () {
-                return new GovernorateResource($this->governorate);
-            }),
+            'description' => $this->description,
+            'price' => $this->price,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
