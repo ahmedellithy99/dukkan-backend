@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Website\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,12 +12,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Public routes (no authentication required)
-Route::prefix('website')->group(function () {
-    // Future public endpoints will go here
-    // Examples:
-    // - Product browsing
-    // - Shop discovery
-    // - Category listing
-    // - Location-based search
-});
+Route::apiResource('shops', ShopController::class)->only(['index', 'show']);

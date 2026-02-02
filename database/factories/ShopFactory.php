@@ -27,6 +27,7 @@ class ShopFactory extends Factory
             'whatsapp_number' => '+20'.$this->faker->numerify('##########'),
             'phone_number' => '+20'.$this->faker->numerify('##########'),
             'is_active' => $this->faker->boolean(80), // 80% chance of being active
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }
