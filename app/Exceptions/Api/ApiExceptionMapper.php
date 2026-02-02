@@ -5,12 +5,10 @@ namespace App\Exceptions\Api;
 use App\Exceptions\Domain\DomainException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 class ApiExceptionMapper
 {
@@ -41,9 +39,9 @@ class ApiExceptionMapper
         });
 
         $exceptions->render(function (ModelNotFoundException|NotFoundHttpException $e, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->apiError('Resource not found.', 'NOT_FOUND', [], 404);
-            }
-        });
+        if ($request->expectsJson()) {
+        return response()->apiError('Resource not found.', 'NOT_FOUND', [], 404);
+        }
+});
     }
 }

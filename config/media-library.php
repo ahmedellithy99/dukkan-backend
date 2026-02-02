@@ -300,4 +300,10 @@ return [
      * disabled lazy loading globally in the service provider.
      */
     'force_lazy_loading' => env('FORCE_MEDIA_LIBRARY_LAZY_LOADING', true),
+
+    /*
+     * Enable or disable media conversions (thumbnails, WebP, etc.)
+     * Disable this if you have issues with GD/Imagick extensions
+     */
+    'enable_conversions' => env('MEDIA_ENABLE_CONVERSIONS', false),
 ];
