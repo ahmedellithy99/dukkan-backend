@@ -172,7 +172,10 @@ class ShopApiTest extends TestCase
 
     public function test_vendor_can_create_shop_successfully()
     {
+        Storage::fake('public');
         Sanctum::actingAs($this->vendor);
+
+        $logo = UploadedFile::fake()->image('logo.jpg', 800, 600);
 
         $shopData = [
             'name' => 'New Electronics Store',
@@ -183,6 +186,7 @@ class ShopApiTest extends TestCase
             'area' => 'Heliopolis',
             'latitude' => 30.0875,
             'longitude' => 31.3241,
+            'logo' => $logo,
         ];
 
         $response = $this->postJson('/api/v1/vendor/my-shops', $shopData);
@@ -356,7 +360,7 @@ class ShopApiTest extends TestCase
                 ]);
 
         // Test file too large (3MB)
-        $largeFile = UploadedFile::fake()->image('large.jpg')->size(3072);
+        $largeFile = UploadedFile::fake()->image('large.jpg')->size(5072);
 
         $shopData['logo'] = $largeFile;
 
