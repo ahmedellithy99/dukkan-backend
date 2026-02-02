@@ -57,10 +57,10 @@ class CategoryService
      */
     public function deleteCategory(Category $category): void
     {
-        // // Check if category can be deleted (no products in subcategories)
-        // if (!$category->canBeDeleted()) {
-        //     throw new CategoryInUseException();
-        // }
+        // Check if category can be deleted (no products in subcategories)
+        if (!$category->canBeDeleted()) {
+            throw new CategoryInUseException();
+        }
 
         $category->delete();
     }

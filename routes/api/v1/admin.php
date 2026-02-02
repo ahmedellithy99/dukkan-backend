@@ -24,6 +24,6 @@ Route::prefix('admin')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);
         
         Route::apiResource('categories', CategoryController::class);
-        Route::apiResource('subcategories', SubcategoryController::class);
+        Route::apiResource('categories/{category}/subcategories', SubcategoryController::class)->scoped();
     });
 });
