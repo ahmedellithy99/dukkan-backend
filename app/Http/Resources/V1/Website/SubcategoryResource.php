@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Resources\V1\Website;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class SubcategoryResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'category_id' => $this->category_id,
+            'name' => $this->name,
+            'slug' => $this->slug,
+        ];
+    }
+}
