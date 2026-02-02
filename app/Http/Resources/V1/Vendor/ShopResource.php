@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1\Vendor;
 
+use App\Http\Resources\V1\MediaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -43,32 +44,10 @@ class ShopResource extends JsonResource
                 return ProductResource::collection($this->products);
             }),
 
-            // Media information
+            // Logo media using MediaResource
             'logo' => $this->whenLoaded('media', function () {
                 $logo = $this->getFirstMedia('logo');
-                if (!$logo) {
-                    return null;
-                }
-                
-                $logoData = [
-                    'id' => $logo->id,
-                    'name' => $logo->name,
-                    'file_name' => $logo->file_name,
-                    'mime_type' => $logo->mime_type,
-                    'size' => $logo->size,
-                    'url' => $logo->getUrl(), // Original: logo.webp
-                ];
-
-                // Add thumbnail URL if conversion exists
-                // This will be: logo-thumb.webp
-                if ($logo->hasGeneratedConversion('thumb')) {
-                    $logoData['thumb_url'] = $logo->getUrl('thumb');
-                } else {
-                    // Fallback to main URL if no thumbnail
-                    $logoData['thumb_url'] = $logoData['url'];
-                }
-
-                return $logoData;
+                return $logo ? new MediaResource($logo) : null;
             }),
 
             'media_count' => $this->whenCounted('media'),

@@ -43,7 +43,7 @@ class StoreShopRequest extends FormRequest
             'longitude' => 'required|numeric|between:25,37', // Egypt bounds
 
             // media attributes
-            'logo' => 'required|image|mimes:jpeg,jpg,png,webp|max:4048', // 2MB max
+            'logo' => 'required|image|mimes:jpeg,jpg,png,webp|max:4048', // 4MB max
         ];
     }
 
