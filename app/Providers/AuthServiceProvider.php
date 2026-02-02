@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
 use App\Models\Location;
 use App\Models\Shop;
+use App\Models\Subcategory;
+use App\Policies\Admin\CategoryPolicy;
+use App\Policies\Admin\SubcategoryPolicy;
 use App\Policies\Vendor\LocationPolicy;
 use App\Policies\Vendor\ShopPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,6 +22,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Location::class => LocationPolicy::class,
         Shop::class => ShopPolicy::class,
+        Category::class => CategoryPolicy::class,
+        Subcategory::class => SubcategoryPolicy::class,
     ];
 
     /**

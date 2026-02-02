@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AuthController;
+use App\Http\Controllers\Api\V1\Admin\CategoryController;
+use App\Http\Controllers\Api\V1\Admin\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +22,8 @@ Route::prefix('admin')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
+        
+        Route::apiResource('categories', CategoryController::class);
+        Route::apiResource('subcategories', SubcategoryController::class);
     });
 });
