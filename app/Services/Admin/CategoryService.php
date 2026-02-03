@@ -35,7 +35,8 @@ class CategoryService
      */
     public function createCategory(array $data): Category
     {
-        return Category::create($data);
+        $category = Category::create($data);
+        return $category->load('subcategories');
     }
 
     /**

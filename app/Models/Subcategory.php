@@ -48,4 +48,12 @@ class Subcategory extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    /**
+     * Check if the subcategory can be deleted (has no products)
+     */
+    public function canBeDeleted(): bool
+    {
+        return $this->products()->count() === 0;
+    }
 }

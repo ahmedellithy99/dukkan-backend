@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Filters\Admin\SubcategoryFilter;
 use App\Exceptions\Domain\Subcategory\SubcategoryInUseException;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class SubcategoryService
@@ -20,7 +19,6 @@ class SubcategoryService
         return Subcategory::where('category_id', $category->id)
             ->filter(new SubcategoryFilter($request))
             ->get();
-
     }
 
     /**
