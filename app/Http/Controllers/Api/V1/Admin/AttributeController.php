@@ -63,7 +63,7 @@ class AttributeController extends Controller
     /**
      * Remove the specified attribute
      */
-    public function destroy(Attribute $attribute): JsonResponse
+    public function destroy(Attribute $attribute)
     {
         $this->attributeService->deleteAttribute($attribute);
         
