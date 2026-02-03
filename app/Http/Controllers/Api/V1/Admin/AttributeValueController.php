@@ -17,6 +17,7 @@ class AttributeValueController extends Controller
 
     public function __construct(AttributeValueService $attributeValueService)
     {
+        $this->authorizeResource(AttributeValue::class, 'attribute_value');
         $this->attributeValueService = $attributeValueService;
     }
 

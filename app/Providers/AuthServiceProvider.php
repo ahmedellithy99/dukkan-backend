@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\Shop;
 use App\Models\Subcategory;
+use App\Policies\Admin\AttributePolicy;
+use App\Policies\Admin\AttributeValuePolicy;
 use App\Policies\Admin\CategoryPolicy;
 use App\Policies\Admin\SubcategoryPolicy;
 use App\Policies\Vendor\LocationPolicy;
@@ -24,6 +28,8 @@ class AuthServiceProvider extends ServiceProvider
         Shop::class => ShopPolicy::class,
         Category::class => CategoryPolicy::class,
         Subcategory::class => SubcategoryPolicy::class,
+        Attribute::class => AttributePolicy::class,
+        AttributeValue::class => AttributeValuePolicy::class,
     ];
 
     /**

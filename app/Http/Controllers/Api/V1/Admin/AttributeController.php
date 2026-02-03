@@ -17,6 +17,7 @@ class AttributeController extends Controller
 
     public function __construct(AttributeService $attributeService)
     {
+        $this->authorizeResource(Attribute::class, 'attribute');
         $this->attributeService = $attributeService;
     }
 
