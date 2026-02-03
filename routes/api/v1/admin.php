@@ -19,15 +19,16 @@ use Illuminate\Support\Facades\Route;
 // Admin Authentication Routes
 Route::prefix('admin')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
-    
+
     // Protected admin routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
-        
+
         Route::apiResource('categories', CategoryController::class);
         Route::apiResource('categories/{category}/subcategories', SubcategoryController::class)->scoped();
-        
+
         Route::apiResource('attributes', AttributeController::class);
+        Route::apiResource('attribute-values', AttributeValueController::class);
     });
 });
