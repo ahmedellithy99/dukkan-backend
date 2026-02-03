@@ -217,7 +217,7 @@ class SubcategoryApiTest extends TestCase
         $response = $this->postJson("/api/v1/admin/categories/{$this->category->slug}/subcategories", []);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name']);
+                ->assertJsonPath('error.fields.name.0', 'Subcategory name is required.');
     }
 
     public function test_subcategory_name_must_be_unique_within_category()
@@ -234,7 +234,7 @@ class SubcategoryApiTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name']);
+                ->assertJsonPath('error.fields.name.0', 'This subcategory already exists.');
     }
 
     public function test_subcategory_name_must_be_globally_unique()
@@ -255,7 +255,7 @@ class SubcategoryApiTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name']);
+                ->assertJsonPath('error.fields.name.0', 'This subcategory already exists.');
     }
 
     public function test_subcategory_slug_is_auto_generated()

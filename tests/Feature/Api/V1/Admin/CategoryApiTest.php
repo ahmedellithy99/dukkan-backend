@@ -191,7 +191,7 @@ class CategoryApiTest extends TestCase
         $response = $this->postJson('/api/v1/admin/categories', []);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name']);
+                ->assertJsonPath('error.fields.name.0', 'Category name is required.');
     }
 
     public function test_category_name_must_be_unique()
@@ -205,7 +205,7 @@ class CategoryApiTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['name']);
+                ->assertJsonPath('error.fields.name.0', 'The name has already been taken.');
     }
 
     public function test_category_slug_is_auto_generated()

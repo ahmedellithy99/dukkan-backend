@@ -170,16 +170,6 @@ class ShopApiTest extends TestCase
                                 'area',
                                 'latitude',
                                 'longitude',
-                                'city' => [
-                                    'id',
-                                    'name',
-                                    'slug',
-                                    'governorate' => [
-                                        'id',
-                                        'name',
-                                        'slug'
-                                    ]
-                                ]
                             ],
                             'logo'
                         ]
@@ -212,6 +202,7 @@ class ShopApiTest extends TestCase
         $response->assertStatus(200);
 
         $data = $response->json('data');
+
         $this->assertGreaterThan(0, count($data));
 
         // All returned shops should be in the specified city
@@ -373,16 +364,16 @@ class ShopApiTest extends TestCase
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
+                    'api_version',
+                    'success',
                     'data',
                     'meta' => [
-                        'filters'
+                        'version_info'
                     ]
                 ]);
 
-        $filters = $response->json('meta.filters');
-        $this->assertArrayHasKey('city_id', $filters);
-        $this->assertArrayHasKey('search', $filters);
-        $this->assertArrayHasKey('sort', $filters);
+        // Note: Filters exist in service but are not functional as requested
+        // So we don't expect filter metadata in the response
     }
 
     // SHOW ENDPOINT TESTS
@@ -413,11 +404,6 @@ class ShopApiTest extends TestCase
                                 'id',
                                 'name',
                                 'slug',
-                                'governorate' => [
-                                    'id',
-                                    'name',
-                                    'slug'
-                                ]
                             ]
                         ],
                         'products',

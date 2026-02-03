@@ -142,8 +142,8 @@ class LocationUpdateTest extends TestCase
 
         $updateData = [
             'area' => 'Test Area',
-            'latitude' => 50.0, // Outside Egypt bounds
-            'longitude' => 50.0, // Outside Egypt bounds
+            'latitude' => 50.0, 
+            'longitude' => 50.0, 
             'city_id' => $this->city->id,
         ];
 

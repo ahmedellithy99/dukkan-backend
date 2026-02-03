@@ -14,7 +14,7 @@ class ShopService
      */
     public function getPublicShops(Request $request, int $perPage = 20): LengthAwarePaginator
     {
-        return  Shop::with(['location', 'owner', 'media'])
+        return  Shop::with(['location.city', 'owner', 'media'])
             ->active() 
             ->filter(new ShopFilter($request))
             ->paginate($perPage)
@@ -26,7 +26,7 @@ class ShopService
      */
     public function getPublicShop(string $slug): Shop
     {
-        return Shop::with(['location', 'owner', 'media','products' => function ($query) {
+        return Shop::with(['location.city', 'owner', 'media','products' => function ($query) {
             $query->where('is_active', true); 
         }])
             ->active()

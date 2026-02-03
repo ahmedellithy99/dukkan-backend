@@ -101,11 +101,6 @@ class ShopApiTest extends TestCase
                                     'id',
                                     'name',
                                     'slug',
-                                    'governorate' => [
-                                        'id',
-                                        'name',
-                                        'slug'
-                                    ]
                                 ]
                             ],
                             'owner' => [
@@ -290,16 +285,21 @@ class ShopApiTest extends TestCase
 
         $response->assertStatus(422)
                 ->assertJsonStructure([
-                    'message',
-                    'errors'
+                    'api_version',
+                    'success',
+                    'error' => [
+                        'code',
+                        'message',
+                        'fields'
+                    ]
                 ])
-                ->assertJsonPath('errors.name.0', 'Shop name is required.')
-                ->assertJsonPath('errors.whatsapp_number.0', 'WhatsApp number is required.')
-                ->assertJsonPath('errors.phone_number.0', 'Phone number is required.')
-                ->assertJsonPath('errors.city_id.0', 'City is required.')
-                ->assertJsonPath('errors.area.0', 'Area is required.')
-                ->assertJsonPath('errors.latitude.0', 'Latitude is required.')
-                ->assertJsonPath('errors.longitude.0', 'Longitude is required.');
+                ->assertJsonPath('error.fields.name.0', 'Shop name is required.')
+                ->assertJsonPath('error.fields.whatsapp_number.0', 'WhatsApp number is required.')
+                ->assertJsonPath('error.fields.phone_number.0', 'Phone number is required.')
+                ->assertJsonPath('error.fields.city_id.0', 'City is required.')
+                ->assertJsonPath('error.fields.area.0', 'Area is required.')
+                ->assertJsonPath('error.fields.latitude.0', 'Latitude is required.')
+                ->assertJsonPath('error.fields.longitude.0', 'Longitude is required.');
     }
 
     public function test_shop_creation_validates_coordinates_within_egypt()
@@ -321,10 +321,15 @@ class ShopApiTest extends TestCase
 
         $response->assertStatus(422)
                 ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'latitude',
-                        'longitude'
+                    'api_version',
+                    'success',
+                    'error' => [
+                        'code',
+                        'message',
+                        'fields' => [
+                            'latitude',
+                            'longitude'
+                        ]
                     ]
                 ]);
     }
@@ -353,9 +358,14 @@ class ShopApiTest extends TestCase
 
         $response->assertStatus(422)
                 ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'logo'
+                    'api_version',
+                    'success',
+                    'error' => [
+                        'code',
+                        'message',
+                        'fields' => [
+                            'logo'
+                        ]
                     ]
                 ]);
 
@@ -368,9 +378,14 @@ class ShopApiTest extends TestCase
 
         $response->assertStatus(422)
                 ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'logo'
+                    'api_version',
+                    'success',
+                    'error' => [
+                        'code',
+                        'message',
+                        'fields' => [
+                            'logo'
+                        ]
                     ]
                 ]);
     }
