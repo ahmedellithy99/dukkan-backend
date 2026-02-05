@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,7 +14,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Product extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasSlug;
+    use HasFactory, InteractsWithMedia, HasSlug, Filterable;
 
     protected $fillable = [
         'shop_id',
@@ -99,29 +100,26 @@ class Product extends Model implements HasMedia
                     ->whereNotNull('discount_value');
     }
 
-    // Media Collections
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')
-            ->acceptsMimeTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
+        $this->addMediaCollection('main_image')->singleFile()->useDisk('public');
+        $this->addMediaCollection('secondary_image')->singleFile()->useDisk('public');
     }
 
-    // Media Conversions
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('thumb_webp')
+        $this->addMediaConversion('thumb')
             ->fit(Fit::Crop, 400, 400)
             ->format('webp')
             ->quality(80)
-            ->performOnCollections('images')
+            ->performOnCollections('main_image', 'secondary_image')
             ->nonQueued();
 
-        $this->addMediaConversion('large_webp')
-            ->width(1400)
-            ->height(1400)
+        $this->addMediaConversion('large')
+            ->fit(Fit::Max, 1400, 1400)
             ->format('webp')
             ->quality(82)
-            ->performOnCollections('images')
+            ->performOnCollections('main_image', 'secondary_image')
             ->nonQueued();
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Vendor\AuthController;
 use App\Http\Controllers\Api\V1\Vendor\LocationController;
+use App\Http\Controllers\Api\V1\Vendor\ProductController;
 use App\Http\Controllers\Api\V1\Vendor\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,11 +25,20 @@ Route::prefix('vendor')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
 
+        //update location
         Route::put('locations/{location}', [LocationController::class, 'update'])
             ->middleware('can:update,location');
 
+        //shops
         Route::apiResource('/my-shops', ShopController::class);
         Route::post('my-shops/{shop}/restore', [ShopController::class, 'restore'])
             ->withTrashed();
+
+        //products    
+        Route::apiResource('my-shop/{shop}/products', ProductController::class)->scoped();
+        Route::put('my-shop/{shop}/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->scopeBindings();
+        Route::put('my-shop/{shop}/products/{product}/stock', [ProductController::class, 'updateStock'])->scopeBindings();
+        Route::put('my-shop/{shop}/products/{product}/apply-discount', [ProductController::class, 'applyDiscount'])->scopeBindings();
+        Route::put('my-shop/{shop}/products/{product}/remove-discount', [ProductController::class, 'removeDiscount'])->scopeBindings();
     });
 });

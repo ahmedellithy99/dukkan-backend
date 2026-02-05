@@ -21,89 +21,39 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'discount_type' => $this->discount_type,
             'discount_value' => $this->discount_value,
-            'final_price' => $this->getFinalPrice(),
+            'discounted_price' => $this->when($this->hasDiscount(), $this->getDiscountedPrice()),
+            'savings_amount' => $this->when($this->hasDiscount(), $this->getSavingsAmount()),
             'stock_quantity' => $this->stock_quantity,
-            'track_stock' => $this->track_stock,
-            'in_stock' => $this->track_stock ? $this->stock_quantity > 0 : true,
             'is_active' => $this->is_active,
+            'is_in_stock' => $this->isInStock(),
+            'is_low_stock' => $this->isLowStock(),
+            'has_discount' => $this->hasDiscount(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
 
-            // Shop information
             'shop' => $this->whenLoaded('shop', function () {
-                return [
-                    'id' => $this->shop->id,
-                    'name' => $this->shop->name,
-                    'slug' => $this->shop->slug,
-                ];
+                return new ShopResource($this->shop);
             }),
 
-            // Category information
             'subcategory' => $this->whenLoaded('subcategory', function () {
-                return [
-                    'id' => $this->subcategory->id,
-                    'name' => $this->subcategory->name,
-                    'slug' => $this->subcategory->slug,
-                    'category' => $this->subcategory->whenLoaded('category', function () {
-                        return [
-                            'id' => $this->subcategory->category->id,
-                            'name' => $this->subcategory->category->name,
-                            'slug' => $this->subcategory->category->slug,
-                        ];
-                    }),
-                ];
+                return new SubcategoryResource($this->subcategory);
             }),
 
-            // Product images using MediaResource
-            'images' => $this->whenLoaded('media', function () {
-                return MediaResource::collection($this->getMedia('images'));
+            'attribute_values' => $this->whenLoaded('attributeValues', function () {
+                return AttributeValueResource::collection($this->attributeValues);
             }),
 
-            'images_count' => $this->whenCounted('media'),
-
-            // Attribute values
-            'attributes' => $this->whenLoaded('attributeValues', function () {
-                return $this->attributeValues->groupBy('attribute.name')->map(function ($values, $attributeName) {
-                    return [
-                        'name' => $attributeName,
-                        'values' => $values->pluck('value')->toArray(),
-                    ];
-                })->values();
-            }),
-
-            // Product statistics
             'stats' => $this->whenLoaded('stats', function () {
-                return [
-                    'views_count' => $this->stats->views_count ?? 0,
-                    'whatsapp_clicks' => $this->stats->whatsapp_clicks ?? 0,
-                    'favorites_count' => $this->stats->favorites_count ?? 0,
-                ];
+                return new ProductStatsResource($this->stats);
+            }),
+
+            'main_image' => $this->whenLoaded('media', function () {
+                return MediaResource::collection($this->getMedia('main_image'));
+            }),
+
+            'secondary_image' => $this->whenLoaded('media', function () {
+                return MediaResource::collection($this->getMedia('secondary_image'));
             }),
         ];
-    }
-
-    /**
-     * Calculate final price after discount
-     */
-    private function getFinalPrice(): ?float
-    {
-        if (!$this->price) {
-            return null;
-        }
-
-        if (!$this->discount_value) {
-            return $this->price;
-        }
-
-        if ($this->discount_type === 'percent') {
-            return $this->price - ($this->price * ($this->discount_value / 100));
-        }
-
-        if ($this->discount_type === 'amount') {
-            return max(0, $this->price - $this->discount_value);
-        }
-
-        return $this->price;
     }
 }
