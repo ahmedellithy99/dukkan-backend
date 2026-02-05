@@ -29,7 +29,7 @@ class ProductController extends Controller
      */
     public function index(Request $request, Shop $shop): JsonResponse
     {
-        $products = $this->productService->getProducts($request, 20);
+        $products = $this->productService->getProducts($shop, $request, 20);
 
         return response()->api(ProductResource::collection($products),200);
     }
@@ -39,7 +39,8 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request, Shop $shop): JsonResponse
     {
-        $product = $this->productService->createProduct($request->validated());
+        $data = array_merge($request->validated(), ['shop_id' => $shop->id]);
+        $product = $this->productService->createProduct($data);
 
         return response()->api(new ProductResource($product), 201);
     }

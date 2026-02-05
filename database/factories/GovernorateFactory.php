@@ -25,7 +25,7 @@ class GovernorateFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->unique()->randomElement([
+        $name = $this->faker->randomElement([
             'Cairo',
             'Alexandria',
             'Giza',
@@ -55,9 +55,12 @@ class GovernorateFactory extends Factory
             'South Sinai'
         ]);
 
+        // Add unique suffix to ensure slug uniqueness across test runs
+        $uniqueSuffix = $this->faker->unique()->numberBetween(1000, 9999);
+
         return [
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name) . '-' . $uniqueSuffix,
         ];
     }
 }

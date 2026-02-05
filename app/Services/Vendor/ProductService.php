@@ -4,7 +4,7 @@ namespace App\Services\Vendor;
 
 use App\Filters\Vendor\ProductFilter;
 use App\Models\Product;
-use App\Models\Subcategory;
+use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +14,10 @@ class ProductService
     /**
      * Get products for a vendor with filtering and pagination.
      */
-    public function getProducts(Request $request, int $perPage = 20): LengthAwarePaginator
+    public function getProducts(Shop $shop, Request $request, int $perPage = 20): LengthAwarePaginator
     {
         return  Product::with(['shop.location.city', 'subcategory.category', 'media'])
-            ->where('shop_id', $request->shop->id)
+            ->where('shop_id', $shop->id)
             ->filter(new ProductFilter($request))
             ->paginate($perPage)
             ->appends($request->query());
@@ -56,11 +56,15 @@ class ProductService
                 'discount_value' => $data['discount_value'] ?? null,
             ]);
 
-            $product->addMediaFromRequest('main_image')
-                ->toMediaCollection('main_image');
+            if (request()->hasFile('main_image')) {
+                $product->addMediaFromRequest('main_image')
+                    ->toMediaCollection('main_image');
+            }
 
-            $product->addMediaFromRequest('secondary_image')
-                ->toMediaCollection('secondary_image');
+            if (request()->hasFile('secondary_image')) {
+                $product->addMediaFromRequest('secondary_image')
+                    ->toMediaCollection('secondary_image');
+            }
 
             return $product->load(['shop', 'subcategory.category', 'media']);
         });
@@ -155,7 +159,7 @@ class ProductService
             'discount_type' => $data['discount_type'],
             'discount_value' => $data['discount_value'],
         ]);
-        
+
         return $product->refresh();
     }
 

@@ -347,15 +347,13 @@ class ProductAttributePropertyTest extends TestCase
         ]);
 
         // Create governorate and city
-        $governorate = Governorate::create([
+        $governorate = Governorate::factory()->create([
             'name' => 'Test Governorate',
-            'slug' => 'test-governorate',
         ]);
 
-        $city = City::create([
+        $city = City::factory()->create([
             'governorate_id' => $governorate->id,
             'name' => 'Test City',
-            'slug' => 'test-city',
         ]);
 
         // Create location

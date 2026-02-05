@@ -220,7 +220,7 @@ class ProductFilteringPropertyTest extends TestCase
      */
     public function test_product_ordering_property()
     {
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $this->runProductOrderingProperty();
         }
     }

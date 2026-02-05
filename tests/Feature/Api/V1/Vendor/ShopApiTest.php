@@ -31,13 +31,11 @@ class ShopApiTest extends TestCase
         // Create governorate and city
         $this->governorate = Governorate::factory()->create([
             'name' => 'Cairo',
-            'slug' => 'cairo'
         ]);
 
         $this->city = City::factory()->create([
             'governorate_id' => $this->governorate->id,
             'name' => 'Cairo City',
-            'slug' => 'cairo-city'
         ]);
 
         // Create vendor users

@@ -35,24 +35,20 @@ class ShopApiTest extends TestCase
         // Create governorates and cities
         $this->governorate = Governorate::factory()->create([
             'name' => 'Cairo',
-            'slug' => 'cairo'
         ]);
 
         $this->otherGovernorate = Governorate::factory()->create([
             'name' => 'Alexandria',
-            'slug' => 'alexandria'
         ]);
 
         $this->city = City::factory()->create([
             'governorate_id' => $this->governorate->id,
             'name' => 'Cairo City',
-            'slug' => 'cairo-city'
         ]);
 
         $this->otherCity = City::factory()->create([
             'governorate_id' => $this->otherGovernorate->id,
             'name' => 'Alexandria City',
-            'slug' => 'alexandria-city'
         ]);
 
         // Create vendor user

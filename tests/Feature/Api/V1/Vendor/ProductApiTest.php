@@ -62,7 +62,7 @@ class ProductApiTest extends TestCase
             'subcategory_id' => $this->subcategory->id,
         ]);
 
-        $response = $this->getJson('/api/v1/vendor/products');
+    $response = $this->getJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -105,7 +105,7 @@ class ProductApiTest extends TestCase
             'is_active' => true,
         ];
 
-        $response = $this->postJson('/api/v1/vendor/products', $productData);
+        $response = $this->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products", $productData);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -143,7 +143,7 @@ class ProductApiTest extends TestCase
             'subcategory_id' => $this->subcategory->id,
         ]);
 
-        $response = $this->getJson("/api/v1/vendor/products/{$product->slug}");
+        $response = $this->getJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -186,7 +186,7 @@ class ProductApiTest extends TestCase
             'description' => 'Updated description',
         ];
 
-        $response = $this->putJson("/api/v1/vendor/products/{$product->slug}", $updateData);
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}", $updateData);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -215,7 +215,7 @@ class ProductApiTest extends TestCase
             'subcategory_id' => $this->subcategory->id,
         ]);
 
-        $response = $this->deleteJson("/api/v1/vendor/products/{$product->slug}");
+        $response = $this->deleteJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}");
 
         $response->assertStatus(204);
 
@@ -237,17 +237,17 @@ class ProductApiTest extends TestCase
         ]);
 
         // Try to view other vendor's product
-        $response = $this->getJson("/api/v1/vendor/products/{$otherProduct->slug}");
+        $response = $this->getJson("/api/v1/vendor/my-shop/{$otherShop->slug}/products/{$otherProduct->slug}");
         $response->assertStatus(403);
 
         // Try to update other vendor's product
-        $response = $this->putJson("/api/v1/vendor/products/{$otherProduct->slug}", [
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$otherShop->slug}/products/{$otherProduct->slug}", [
             'name' => 'Hacked Name'
         ]);
         $response->assertStatus(403);
 
         // Try to delete other vendor's product
-        $response = $this->deleteJson("/api/v1/vendor/products/{$otherProduct->slug}");
+        $response = $this->deleteJson("/api/v1/vendor/my-shop/{$otherShop->slug}/products/{$otherProduct->slug}");
         $response->assertStatus(403);
     }
 
@@ -261,7 +261,7 @@ class ProductApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->patchJson("/api/v1/vendor/products/{$product->slug}/toggle-status");
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}/toggle-status");
 
         $response->assertStatus(200)
             ->assertJson([
@@ -287,7 +287,7 @@ class ProductApiTest extends TestCase
             'stock_quantity' => 10,
         ]);
 
-        $response = $this->patchJson("/api/v1/vendor/products/{$product->slug}/stock", [
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}/stock", [
             'stock_quantity' => 25,
         ]);
 
@@ -315,7 +315,7 @@ class ProductApiTest extends TestCase
             'price' => 100.00,
         ]);
 
-        $response = $this->patchJson("/api/v1/vendor/products/{$product->slug}/discount", [
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}/apply-discount", [
             'discount_type' => 'percent',
             'discount_value' => 20,
         ]);
@@ -351,7 +351,7 @@ class ProductApiTest extends TestCase
             'discount_value' => 20,
         ]);
 
-        $response = $this->deleteJson("/api/v1/vendor/products/{$product->slug}/discount");
+        $response = $this->putJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$product->slug}/remove-discount");
 
         $response->assertStatus(200)
             ->assertJson([
