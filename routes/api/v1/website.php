@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Website\ShopController;
 use App\Http\Controllers\Api\V1\Website\CategoryController;
 use App\Http\Controllers\Api\V1\Website\SubcategoryController;
 use App\Http\Controllers\Api\V1\Website\AttributeController;
+use App\Http\Controllers\Api\V1\Website\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +22,7 @@ Route::apiResource('categories', CategoryController::class)->only(['index', 'sho
 Route::apiResource('categories/{category}/subcategories', SubcategoryController::class)->only(['index', 'show'])->scoped();
 
 Route::apiResource('attributes', AttributeController::class)->only(['index', 'show']);
+
+Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+
+

@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ProductResource extends JsonResource
 {
     /**
-     * Transform the resource into an array for public website consumption.
+     * Transform the resource into an array for public website.
      */
     public function toArray(Request $request): array
     {
@@ -21,74 +21,42 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'discount_type' => $this->discount_type,
             'discount_value' => $this->discount_value,
-            'final_price' => $this->getFinalPrice(), // Calculated price after discount
-            'stock_quantity' => $this->track_stock ? $this->stock_quantity : null,
-            'in_stock' => $this->track_stock ? $this->stock_quantity > 0 : true,
-            'is_active' => $this->is_active,
+            'discounted_price' => $this->when($this->hasDiscount(), $this->getDiscountedPrice()),
+            'savings_amount' => $this->when($this->hasDiscount(), $this->getSavingsAmount()),
+            'stock_quantity' => $this->stock_quantity,
+            'is_in_stock' => $this->isInStock(),
+            'is_low_stock' => $this->isLowStock(),
+            'has_discount' => $this->hasDiscount(),
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
 
-            // Shop information (minimal for public)
             'shop' => $this->whenLoaded('shop', function () {
-                return [
-                    'id' => $this->shop->id,
-                    'name' => $this->shop->name,
-                    'slug' => $this->shop->slug,
-                    'whatsapp_number' => $this->shop->whatsapp_number,
-                    'phone_number' => $this->shop->phone_number,
-                ];
+                return new ShopResource($this->shop);
             }),
 
             'subcategory' => $this->whenLoaded('subcategory', function () {
+                return new SubcategoryResource($this->subcategory);
+            }),
+
+            'attribute_values' => $this->whenLoaded('attributeValues', function () {
+                return AttributeValueResource::collection($this->attributeValues);
+            }),
+
+            'stats' => $this->whenLoaded('stats', function () {
                 return [
-                    'id' => $this->subcategory->id,
-                    'name' => $this->subcategory->name,
-                    'slug' => $this->subcategory->slug,
-                    'category' => $this->subcategory->whenLoaded('category', function () {
-                        return [
-                            'id' => $this->subcategory->category->id,
-                            'name' => $this->subcategory->category->name,
-                            'slug' => $this->subcategory->category->slug,
-                        ];
-                    }),
+                    'views_count' => $this->stats->views_count ?? 0,
+                    'whatsapp_clicks_count' => $this->stats->whatsapp_clicks_count ?? 0,
+                    'favorites_count' => $this->stats->favorites_count ?? 0,
                 ];
             }),
 
-            'images' => $this->whenLoaded('media', function () {
-                return MediaResource::collection($this->getMedia('images'));
+            'main_image' => $this->whenLoaded('media', function () {
+                return MediaResource::collection($this->getMedia('main_image'));
             }),
 
-            'attributes' => $this->whenLoaded('attributeValues', function () {
-                return $this->attributeValues->groupBy('attribute.name')->map(function ($values, $attributeName) {
-                    return [
-                        'name' => $attributeName,
-                        'values' => $values->pluck('value')->toArray(),
-                    ];
-                })->values();
+            'secondary_image' => $this->whenLoaded('media', function () {
+                return MediaResource::collection($this->getMedia('secondary_image'));
             }),
         ];
-    }
-
-    /**
-     * Calculate final price after discount
-     */
-    private function getFinalPrice(): ?float
-    {
-        if (!$this->price) {
-            return null;
-        }
-
-        if (!$this->discount_value) {
-            return $this->price;
-        }
-
-        if ($this->discount_type === 'percent') {
-            return $this->price - ($this->price * ($this->discount_value / 100));
-        }
-
-        if ($this->discount_type === 'amount') {
-            return max(0, $this->price - $this->discount_value);
-        }
-
-        return $this->price;
     }
 }
