@@ -9,7 +9,6 @@ class ProductFilter extends BaseFilter
     protected array $allowed = [
         'search',
         'is_active',
-        'shop_id',
         'subcategory_id',
         'category_id',
         'min_price',
@@ -17,8 +16,6 @@ class ProductFilter extends BaseFilter
         'in_stock',
         'on_discount',
         'attributes',
-        'city_id',
-        'area',
         'near',
         'sort',
     ];
@@ -118,49 +115,25 @@ class ProductFilter extends BaseFilter
         }
     }
 
-    /**
-     * Filter by attribute values
-     * Expected format: attributes[attribute_slug][] = value_slug
-     * Example: attributes[color][] = red&attributes[color][] = blue&attributes[size][] = large
-     */
-    public function attributes($attributeFilters): void
-    {
-        if (!is_array($attributeFilters)) {
-            return;
-        }
+    //GET /api/v1/products?av[color]=12,13&av[size]=44,45&av[brand]=88
+    public function attributes($filters): void
+    {   
+        if (!is_array($filters) || empty($filters)) return;
 
-        foreach ($attributeFilters as $attributeSlug => $valueFilters) {
-            if (!is_array($valueFilters) || empty($valueFilters)) {
-                continue;
-            }
+        foreach ($filters as $attributeSlug => $csvIds) {
+            $ids = is_array($csvIds)
+                ? array_map('intval', $csvIds)
+                : array_filter(array_map('intval', explode(',', (string) $csvIds)));
 
-            // Filter products that have ANY of the specified values for this attribute
-            $this->builder->whereHas('attributeValues', function ($query) use ($attributeSlug, $valueFilters) {
-                $query->whereHas('attribute', function ($q) use ($attributeSlug) {
-                    $q->where('slug', $attributeSlug);
-                })->whereIn('slug', $valueFilters);
+            if (!$ids) continue;
+
+            $this->builder->whereExists(function ($sub) use ($ids) {
+                $sub->selectRaw(1)
+                    ->from('product_attribute_values as pav')
+                    ->whereColumn('pav.product_id', 'products.id')
+                    ->whereIn('pav.attribute_value_id', $ids);
             });
         }
-    }
-
-    /**
-     * Filter by city (through shop location)
-     */
-    public function city_id($cityId): void
-    {
-        $this->builder->whereHas('shop.location', function ($query) use ($cityId) {
-            $query->where('city_id', $cityId);
-        });
-    }
-
-    /**
-     * Filter by area (through shop location)
-     */
-    public function area($area): void
-    {
-        $this->builder->whereHas('shop.location', function ($query) use ($area) {
-            $query->where('area', 'LIKE', "%{$area}%");
-        });
     }
 
     /**
