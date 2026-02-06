@@ -49,10 +49,12 @@ class AuthenticationEdgeCasesTest extends TestCase
      */
     public function test_registration_with_duplicate_email()
     {
+        $email = 'duplicate-' . uniqid() . '@example.com';
+        
         // Create existing user
         User::create([
             'name' => 'Existing User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567890',
             'password' => Hash::make('password123'),
             'role' => 'vendor',
@@ -62,7 +64,7 @@ class AuthenticationEdgeCasesTest extends TestCase
         // Try to register with same email
         $response = $this->postJson('/api/v1/vendor/register', [
             'name' => 'New User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567891',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -83,10 +85,12 @@ class AuthenticationEdgeCasesTest extends TestCase
      */
     public function test_login_with_invalid_credentials()
     {
+        $email = 'login-test-' . uniqid() . '@example.com';
+        
         // Create user
         User::create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567890',
             'password' => Hash::make('correct_password'),
             'role' => 'vendor',
@@ -95,7 +99,7 @@ class AuthenticationEdgeCasesTest extends TestCase
 
         // Test wrong password
         $response = $this->postJson('/api/v1/vendor/login', [
-            'email' => 'test@example.com',
+            'email' => $email,
             'password' => 'wrong_password',
         ]);
 
@@ -186,10 +190,12 @@ class AuthenticationEdgeCasesTest extends TestCase
      */
     public function test_password_validation_requirements()
     {
+        $email = 'password-test-' . uniqid() . '@example.com';
+        
         // Test short password
         $response = $this->postJson('/api/v1/vendor/register', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567890',
             'password' => '123',
             'password_confirmation' => '123',
@@ -204,9 +210,11 @@ class AuthenticationEdgeCasesTest extends TestCase
      */
     public function test_password_confirmation_mismatch()
     {
+        $email = 'confirmation-test-' . uniqid() . '@example.com';
+        
         $response = $this->postJson('/api/v1/vendor/register', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567890',
             'password' => 'password123',
             'password_confirmation' => 'different_password',
@@ -238,10 +246,12 @@ class AuthenticationEdgeCasesTest extends TestCase
      */
     public function test_successful_authentication_flow()
     {
+        $email = 'auth-flow-' . uniqid() . '@example.com';
+        
         // Register user
         $registerResponse = $this->postJson('/api/v1/vendor/register', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => $email,
             'phone' => '+201234567890',
             'password' => 'password123',
             'password_confirmation' => 'password123',
@@ -270,7 +280,7 @@ class AuthenticationEdgeCasesTest extends TestCase
             'success' => true,
             'data' => [
                 'user' => [
-                    'email' => 'test@example.com',
+                    'email' => $email,
                     'role' => 'vendor',
                     'status' => 'active'
                 ]

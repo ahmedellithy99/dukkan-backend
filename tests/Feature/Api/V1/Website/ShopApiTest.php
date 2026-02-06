@@ -456,13 +456,9 @@ class ShopApiTest extends TestCase
         $products = $response->json('data.products');
         $this->assertGreaterThan(0, count($products));
 
-        // All products should be active
-        foreach ($products as $product) {
-            $this->assertTrue($product['is_active']);
-        }
-
         // Should not include inactive products
         $productNames = collect($products)->pluck('name')->toArray();
+        $this->assertContains('Active Product', $productNames);
         $this->assertNotContains('Inactive Product', $productNames);
     }
 

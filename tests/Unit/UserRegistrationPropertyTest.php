@@ -58,8 +58,18 @@ class UserRegistrationPropertyTest extends TestCase
         $duplicateUserData = $this->generateValidUserData();
         $duplicateUserData['email'] = $userData['email']; // Same email
 
-        $this->expectException(QueryException::class);
-        User::create($duplicateUserData);
+        $exceptionThrown = false;
+        try {
+            User::create($duplicateUserData);
+        } catch (QueryException $e) {
+            $exceptionThrown = true;
+            $this->assertTrue(
+                str_contains($e->getMessage(), 'Duplicate entry') ||
+                str_contains($e->getMessage(), 'UNIQUE constraint failed')
+            );
+        }
+
+        $this->assertTrue($exceptionThrown, 'Expected QueryException for duplicate email');
     }
 
     /**

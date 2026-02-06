@@ -31,9 +31,13 @@ class CategoryHierarchyPropertyTest extends TestCase
             Generator\string(),
             Generator\string()
         )->then(function ($categoryName, $subcategoryName) {
+            // Trim first
+            $categoryName = trim($categoryName);
+            $subcategoryName = trim($subcategoryName);
+            
             // Skip empty strings and very short names
             if (empty($categoryName) || empty($subcategoryName) || 
-                strlen(trim($categoryName)) < 2 || strlen(trim($subcategoryName)) < 2) {
+                strlen($categoryName) < 2 || strlen($subcategoryName) < 2) {
                 return;
             }
 
@@ -41,9 +45,17 @@ class CategoryHierarchyPropertyTest extends TestCase
             Category::truncate();
             Subcategory::truncate();
 
-            // Trim and limit names to fit database constraints
-            $categoryName = substr(trim($categoryName), 0, 30);
-            $subcategoryName = substr(trim($subcategoryName), 0, 40);
+            // Limit names to fit database constraints
+            $categoryName = substr($categoryName, 0, 30);
+            $subcategoryName = substr($subcategoryName, 0, 40);
+            
+            // After substring, verify names are still valid (not empty after trim)
+            $categoryName = trim($categoryName);
+            $subcategoryName = trim($subcategoryName);
+            
+            if (empty($categoryName) || empty($subcategoryName)) {
+                return;
+            }
 
             // Create category
             $category = Category::create([
