@@ -14,7 +14,7 @@ class ProductService
      */
     public function getProducts(Request $request, int $perPage = 20)
     {
-        return Product::with(['shop.location.city', 'subcategory.category', 'media'])
+        return Product::with(['media'])
             ->where('is_active', true)
             // ->whereHas('shop', function ($query) {
             //     $query->where('is_active', true);
@@ -29,8 +29,7 @@ class ProductService
     public function getProduct(Product $product): Product
     {
         return $product->load([
-            'shop',
-            'subcategory.category',
+            'shop.location',
             'attributeValues.attribute',
             'media'
         ]);
