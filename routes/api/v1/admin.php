@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AdCarouselController;
 use App\Http\Controllers\Api\V1\Admin\AuthController;
 use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\SubcategoryController;
@@ -30,5 +31,8 @@ Route::prefix('admin')->group(function () {
 
         Route::apiResource('attributes', AttributeController::class);
         Route::apiResource('attribute-values', AttributeValueController::class);
+
+        // Ad Carousel Management
+        Route::apiResource('ad-carousels', AdCarouselController::class);
     });
 });
