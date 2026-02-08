@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Website\AdCarouselController;
 use App\Http\Controllers\Api\V1\Website\ShopController;
 use App\Http\Controllers\Api\V1\Website\CategoryController;
 use App\Http\Controllers\Api\V1\Website\SubcategoryController;
@@ -25,4 +26,5 @@ Route::apiResource('attributes', AttributeController::class)->only(['index', 'sh
 
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
-
+// Ad Carousel for Homepage
+Route::get('ad-carousels', [AdCarouselController::class, 'index']);
