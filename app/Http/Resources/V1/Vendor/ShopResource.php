@@ -16,14 +16,9 @@ class ShopResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug,
             'description' => $this->description,
             'whatsapp_number' => $this->whatsapp_number,
             'phone_number' => $this->phone_number,
-            'is_active' => $this->is_active,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
 
             // Include relationships when loaded
             'location' => $this->whenLoaded('location', function () {

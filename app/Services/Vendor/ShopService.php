@@ -6,7 +6,7 @@ use App\Filters\Vendor\ShopFilter;
 use App\Models\Shop;
 use App\Models\Location;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ShopService
@@ -14,14 +14,12 @@ class ShopService
     /**
      * Get shops for a vendor with filtering and pagination.
      */
-    public function getShops(Request $request, int $perPage = 20): LengthAwarePaginator
+    public function getShops(Request $request): Collection
     {
-        return  Shop::with(['location', 'owner', 'media', 'products'])
-            ->withCount('products')
+        return  Shop::with(['media'])
             ->where('owner_id', $request->user()->id)
             ->filter(new ShopFilter($request))
-            ->paginate($perPage)
-            ->appends($request->query());
+            ->get();
     }
 
     /**
