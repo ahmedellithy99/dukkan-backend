@@ -22,7 +22,7 @@ class ShopController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $shops = $this->shopService->getPublicShops($request, 20);
+        $shops = $this->shopService->getPublicShops($request, 40);
 
         return response()->api(ShopResource::collection($shops),200);
     }
