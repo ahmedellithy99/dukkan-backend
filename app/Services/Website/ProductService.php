@@ -34,4 +34,22 @@ class ProductService
             'media'
         ]);
     }
+
+    /**
+     * Get products with active discounts ordered by discount value for homepage offers.
+     */
+    public function getOffers(Request $request, int $perPage = 20)
+    {
+        return Product::with(['media'])
+            ->where('is_active', true)
+            ->onDiscount()
+            ->orderByRaw('
+                CASE 
+                    WHEN discount_type = "percent" THEN price * (discount_value / 100)
+                    WHEN discount_type = "amount" THEN discount_value
+                    ELSE 0
+                END DESC
+            ')
+            ->get();
+    }
 }

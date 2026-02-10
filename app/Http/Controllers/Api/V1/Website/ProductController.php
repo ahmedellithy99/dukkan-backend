@@ -43,4 +43,17 @@ class ProductController extends Controller
 
         return response()->api(new ProductResource($product));
     }
+
+    /**
+     * Display products with active discounts for homepage offers section.
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function offers(Request $request): JsonResponse
+    {
+        $offers = $this->productService->getOffers($request, 20);
+
+        return response()->api(ProductResource::collection($offers), 200);
+    }
 }
