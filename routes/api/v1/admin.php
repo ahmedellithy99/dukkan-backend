@@ -19,10 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 // Admin Authentication Routes
 Route::prefix('admin')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
+    Route::middleware('throttle:auth')->group(function () {
+        Route::post('login', [AuthController::class, 'login']);
+    });
 
     // Protected admin routes
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
 
@@ -36,3 +38,4 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('ad-carousels', AdCarouselController::class);
     });
 });
+

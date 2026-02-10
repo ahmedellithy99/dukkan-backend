@@ -15,7 +15,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // API middleware
+        $middleware->api(prepend: [
+            \App\Http\Middleware\EnsureJsonResponse::class,
+            \App\Http\Middleware\AddApiVersionHeader::class,
+        ]);
+
+        // Middleware aliases
+        $middleware->alias([
+            'city.resolve' => \App\Http\Middleware\ResolveCityFromHeader::class,
+        ]);
+
+        // Throttle configuration
+        $middleware->throttleApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         ApiExceptionMapper::register($exceptions);

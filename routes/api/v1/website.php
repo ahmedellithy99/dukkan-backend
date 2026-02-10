@@ -17,21 +17,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
+Route::middleware('throttle:public')->group(function () {
+    Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
 
-Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
-Route::apiResource('categories/{category}/subcategories', SubcategoryController::class)->only(['index', 'show'])->scoped();
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+    Route::apiResource('categories/{category}/subcategories', SubcategoryController::class)->only(['index', 'show'])->scoped();
 
-Route::apiResource('attributes', AttributeController::class)->only(['index', 'show']);
+    Route::apiResource('attributes', AttributeController::class)->only(['index', 'show']);
 
-Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+    Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
-// Product analytics tracking (public endpoints)
-Route::post('products/{product}/track/whatsapp', [ProductController::class, 'trackWhatsAppClick']);
-Route::post('products/{product}/track/location', [ProductController::class, 'trackLocationClick']);
+    // Offers endpoint for homepage (products with discounts)
+    Route::get('offers', [ProductController::class, 'offers']);
 
-// Offers endpoint for homepage (products with discounts)
-Route::get('offers', [ProductController::class, 'offers']);
+    // Ad Carousel for Homepage
+    Route::get('ad-carousels', [AdCarouselController::class, 'index']);
+});
 
-// Ad Carousel for Homepage
-Route::get('ad-carousels', [AdCarouselController::class, 'index']);
+// Product analytics tracking (public endpoints with higher rate limit)
+Route::middleware('throttle:analytics')->group(function () {
+    Route::post('products/{product}/track/whatsapp', [ProductController::class, 'trackWhatsAppClick']);
+    Route::post('products/{product}/track/location', [ProductController::class, 'trackLocationClick']);
+});
+
