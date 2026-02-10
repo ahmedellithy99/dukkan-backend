@@ -26,6 +26,10 @@ Route::apiResource('attributes', AttributeController::class)->only(['index', 'sh
 
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
+// Product analytics tracking (public endpoints)
+Route::post('products/{product}/track/whatsapp', [ProductController::class, 'trackWhatsAppClick']);
+Route::post('products/{product}/track/location', [ProductController::class, 'trackLocationClick']);
+
 // Offers endpoint for homepage (products with discounts)
 Route::get('offers', [ProductController::class, 'offers']);
 
