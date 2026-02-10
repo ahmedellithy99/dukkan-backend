@@ -58,11 +58,9 @@ class ProductApiTest extends TestCase
                     'slug',
                     'description',
                     'price',
-                    'stock_quantity',
-                    'is_in_stock',
+                    'discount_type',
+                    'discount_value',
                     'has_discount',
-                    'created_at',
-                    'updated_at',
                 ]
             ])
             ->assertJson([

@@ -82,37 +82,14 @@ class ShopApiTest extends TestCase
                         '*' => [
                             'id',
                             'name',
-                            'slug',
                             'description',
                             'whatsapp_number',
                             'phone_number',
-                            'is_active',
-                            'created_at',
-                            'updated_at',
-                            'location' => [
-                                'id',
-                                'area',
-                                'latitude',
-                                'longitude',
-                                'full_address',
-                                'city' => [
-                                    'id',
-                                    'name',
-                                    'slug',
-                                ]
-                            ],
-                            'owner' => [
-                                'id',
-                                'name',
-                                'email'
-                            ],
                             'logo'
                         ]
                     ],
                     'meta' => [
-                        'version_info',
-                        'pagination',
-                        'links'
+                        'version_info'
                     ]
                 ])
                 ->assertJson([
@@ -121,7 +98,6 @@ class ShopApiTest extends TestCase
                         [
                             'id' => $this->shop->id,
                             'name' => 'Test Shop',
-                            'slug' => $this->shop->slug,
                         ]
                     ]
                 ]);
@@ -191,11 +167,9 @@ class ShopApiTest extends TestCase
                     'data' => [
                         'id',
                         'name',
-                        'slug',
                         'description',
                         'whatsapp_number',
                         'phone_number',
-                        'is_active',
                         'location',
                         'owner',
                         'logo'
@@ -403,11 +377,9 @@ class ShopApiTest extends TestCase
                     'data' => [
                         'id',
                         'name',
-                        'slug',
                         'description',
                         'whatsapp_number',
                         'phone_number',
-                        'is_active',
                         'location',
                         'owner',
                         'products',
@@ -422,7 +394,6 @@ class ShopApiTest extends TestCase
                     'data' => [
                         'id' => $this->shop->id,
                         'name' => 'Test Shop',
-                        'slug' => $this->shop->slug,
                     ]
                 ]);
     }
@@ -678,11 +649,9 @@ class ShopApiTest extends TestCase
                     'data' => [
                         'id',
                         'name',
-                        'slug',
                         'description',
                         'whatsapp_number',
                         'phone_number',
-                        'is_active',
                         'location',
                         'owner'
                     ],
