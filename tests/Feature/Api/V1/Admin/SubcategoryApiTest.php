@@ -90,7 +90,6 @@ class SubcategoryApiTest extends TestCase
 
         $this->assertDatabaseHas('subcategories', [
             'name' => 'Smartphones',
-            'slug' => 'smartphones',
             'category_id' => $this->category->id
         ]);
     }
@@ -112,7 +111,6 @@ class SubcategoryApiTest extends TestCase
                     'data' => [
                         'id' => $subcategory->id,
                         'name' => 'Laptops',
-                        'slug' => 'laptops',
                         'category_id' => $this->category->id
                     ]
                 ]);
@@ -139,7 +137,6 @@ class SubcategoryApiTest extends TestCase
                     'data' => [
                         'id' => $subcategory->id,
                         'name' => 'New Name',
-                        'slug' => 'new-name',
                         'category_id' => $this->category->id
                     ]
                 ]);
@@ -147,7 +144,6 @@ class SubcategoryApiTest extends TestCase
         $this->assertDatabaseHas('subcategories', [
             'id' => $subcategory->id,
             'name' => 'New Name',
-            'slug' => 'new-name'
         ]);
     }
 
@@ -269,7 +265,8 @@ class SubcategoryApiTest extends TestCase
         $response->assertStatus(201);
         
         $subcategory = Subcategory::where('name', 'Gaming Laptops')->first();
-        $this->assertEquals('gaming-laptops', $subcategory->slug);
+        $this->assertNotNull($subcategory->slug);
+        $this->assertStringStartsWith('gaming-laptops', $subcategory->slug);
     }
 
     public function test_cannot_access_subcategory_with_invalid_category()

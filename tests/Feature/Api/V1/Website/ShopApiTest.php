@@ -10,8 +10,6 @@ use App\Models\Governorate;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ShopApiTest extends TestCase
@@ -32,23 +30,27 @@ class ShopApiTest extends TestCase
     {
         parent::setUp();
 
-        // Create governorates and cities
+        // Create governorates and cities with specific slugs
         $this->governorate = Governorate::factory()->create([
             'name' => 'Cairo',
+            'slug' => 'cairo',
         ]);
 
         $this->otherGovernorate = Governorate::factory()->create([
             'name' => 'Alexandria',
+            'slug' => 'alexandria',
         ]);
 
         $this->city = City::factory()->create([
             'governorate_id' => $this->governorate->id,
             'name' => 'Cairo City',
+            'slug' => 'cairo',
         ]);
 
         $this->otherCity = City::factory()->create([
             'governorate_id' => $this->otherGovernorate->id,
             'name' => 'Alexandria City',
+            'slug' => 'alexandria',
         ]);
 
         // Create vendor user
@@ -98,12 +100,12 @@ class ShopApiTest extends TestCase
             'is_active' => false,
         ]);
 
-        // Shop with active products
+        // Shop with active products - CHANGED TO CAIRO
         $location3 = Location::factory()->create([
-            'city_id' => $this->otherCity->id,
-            'area' => 'Alexandria Center',
-            'latitude' => 31.2001,
-            'longitude' => 29.9187,
+            'city_id' => $this->city->id,
+            'area' => 'Nasr City',
+            'latitude' => 30.0444,
+            'longitude' => 31.2357,
         ]);
 
         $this->shopWithProducts = Shop::factory()->create([
@@ -184,7 +186,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_filter_shops_by_city()
     {
-        $response = $this->getJson("/api/v1/shops?city_id={$this->city->id}");
+        $response = $this->getJsonWithCity("/api/v1/shops?city_id={$this->city->id}");
 
         $response->assertStatus(200);
 
@@ -285,7 +287,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_combine_multiple_filters()
     {
-        $response = $this->getJson("/api/v1/shops?city_id={$this->city->id}&search=Electronics&sort=-created_at");
+        $response = $this->getJsonWithCity("/api/v1/shops?city_id={$this->city->id}&search=Electronics&sort=-created_at");
 
         $response->assertStatus(200);
 
@@ -338,7 +340,7 @@ class ShopApiTest extends TestCase
 
     public function test_returns_filter_metadata()
     {
-        $response = $this->getJson("/api/v1/shops?city_id={$this->city->id}&search=test&sort=-name");
+        $response = $this->getJsonWithCity("/api/v1/shops?city_id={$this->city->id}&search=test&sort=-name");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([

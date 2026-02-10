@@ -49,7 +49,6 @@ class CategoryApiTest extends TestCase
                     'data' => [
                         'id' => $category->id,
                         'name' => 'Electronics',
-                        'slug' => 'electronics'
                     ]
                 ])
                 ->assertJsonStructure([

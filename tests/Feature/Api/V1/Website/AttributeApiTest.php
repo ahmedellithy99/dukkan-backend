@@ -89,7 +89,7 @@ class AttributeApiTest extends TestCase
             'value' => 'Green'
         ]);
 
-        $response = $this->getJson("/api/v1/attributes/{$attribute->slug}");
+        $response = $this->getJsonWithCity("/api/v1/attributes/{$attribute->slug}");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -177,7 +177,7 @@ class AttributeApiTest extends TestCase
             'value' => 'Red'
         ]);
 
-        $response = $this->getJson("/api/v1/attributes/{$attribute->slug}");
+        $response = $this->getJsonWithCity("/api/v1/attributes/{$attribute->slug}");
 
         $response->assertStatus(200);
 

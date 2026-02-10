@@ -90,7 +90,7 @@ class ProductApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson("/api/v1/products?category_id={$this->subcategory->category_id}");
+        $response = $this->getJsonWithCity("/api/v1/products?category_id={$this->subcategory->category_id}");
 
         $response->assertStatus(200);
         $this->assertCount(2, $response->json('data'));
@@ -132,8 +132,15 @@ class ProductApiTest extends TestCase
 
     private function createLocation(): Location
     {
-        $governorate = Governorate::factory()->create();
-        $city = City::factory()->create(['governorate_id' => $governorate->id]);
+        $governorate = Governorate::firstOrCreate(
+            ['slug' => 'cairo'],
+            ['name' => 'Cairo']
+        );
+        
+        $city = City::firstOrCreate(
+            ['slug' => 'cairo', 'governorate_id' => $governorate->id],
+            ['name' => 'Cairo']
+        );
         
         return Location::factory()->create(['city_id' => $city->id]);
     }

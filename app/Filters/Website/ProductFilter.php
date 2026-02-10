@@ -30,12 +30,13 @@ class ProductFilter extends BaseFilter
 
     /**
      * Search by product name and description
+     * Note: Using qualified column names because ProductService may JOIN with shops table
      */
     public function search($term): void
     {
         $this->builder->where(function ($query) use ($term) {
-            $query->where('name', 'LIKE', "%{$term}%")
-                ->orWhere('description', 'LIKE', "%{$term}%");
+            $query->where('products.name', 'LIKE', "%{$term}%")
+                ->orWhere('products.description', 'LIKE', "%{$term}%");
         });
     }
 

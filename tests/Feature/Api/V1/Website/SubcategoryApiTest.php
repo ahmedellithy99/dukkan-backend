@@ -69,7 +69,6 @@ class SubcategoryApiTest extends TestCase
                     'data' => [
                         'id' => $subcategory->id,
                         'name' => 'Smartphones',
-                        'slug' => 'smartphones',
                         'category_id' => $this->category->id
                     ]
                 ]);

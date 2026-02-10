@@ -147,16 +147,19 @@ class CityFilteringTest extends TestCase
     }
 
     #[Test]
-    public function test_missing_city_header_returns_all_products()
+    public function test_missing_city_header_returns_error()
     {
-        // Request without city header
+        // Request without city header - middleware now requires it
         $response = $this->getJson('/api/v1/products');
 
-        $response->assertOk();
-        
-        // Should return products from all cities
-        $products = $response->json('data');
-        $this->assertIsArray($products);
+        // Should return 422 error since X-City header is required
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'error' => [
+                'code' => 'INVALID_CITY_HEADER',
+            ],
+        ]);
     }
 
     #[Test]

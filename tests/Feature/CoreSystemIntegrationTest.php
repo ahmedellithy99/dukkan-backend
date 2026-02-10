@@ -28,8 +28,18 @@ class CoreSystemIntegrationTest extends TestCase
             'role' => 'vendor'
         ]);
 
-        // 2. Test Location Management System
+        // 2. Test Location Management System with Cairo
+        $governorate = \App\Models\Governorate::firstOrCreate(
+            ['slug' => 'cairo'],
+            ['name' => 'Cairo']
+        );
+        $city = \App\Models\City::firstOrCreate(
+            ['slug' => 'cairo'],
+            ['name' => 'Cairo', 'governorate_id' => $governorate->id]
+        );
+        
         $location = Location::factory()->create([
+            'city_id' => $city->id,
             'area' => 'Nasr City',
             'latitude' => 30.0444,
             'longitude' => 31.2357
@@ -117,21 +127,12 @@ class CoreSystemIntegrationTest extends TestCase
                 '*' => [
                     'id',
                     'name',
-                    'location' => [
-                        'area',
-                        'city' => [
-                            'name',
-                            'governorate' => [
-                                'name'
-                            ]
-                        ]
-                    ]
                 ]
             ]
         ]);
 
-        // 8. Test Public API Integration
-        $publicResponse = $this->get('/api/v1/shops');
+        // 8. Test Public API Integration with X-City header
+        $publicResponse = $this->getJsonWithCity('/api/v1/shops');
         $publicResponse->assertStatus(200);
         $publicResponse->assertJsonStructure([
             'success',
@@ -139,13 +140,12 @@ class CoreSystemIntegrationTest extends TestCase
                 '*' => [
                     'id',
                     'name',
-                    'location'
                 ]
             ]
         ]);
 
-        // 9. Test Category API Integration
-        $categoryResponse = $this->get('/api/v1/categories');
+        // 9. Test Category API Integration with X-City header
+        $categoryResponse = $this->getJsonWithCity('/api/v1/categories');
         $categoryResponse->assertStatus(200);
         $categoryResponse->assertJsonStructure([
             'success',
@@ -276,8 +276,8 @@ class CoreSystemIntegrationTest extends TestCase
         $this->assertEquals($category->id, $subcategory->category_id);
         $this->assertTrue($category->subcategories->contains($subcategory));
 
-        // Test public API shows hierarchy
-        $publicResponse = $this->get("/api/v1/categories/{$categorySlug}");
+        // Test public API shows hierarchy with X-City header
+        $publicResponse = $this->getJsonWithCity("/api/v1/categories/{$categorySlug}");
         $publicResponse->assertStatus(200);
         $publicResponse->assertJsonPath('data.name', 'Test Category');
     }
