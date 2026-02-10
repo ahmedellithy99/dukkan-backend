@@ -30,7 +30,7 @@ class SubcategoryApiTest extends TestCase
         $otherCategory = Category::factory()->create();
         Subcategory::factory()->count(2)->create(['category_id' => $otherCategory->id]);
 
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -61,7 +61,7 @@ class SubcategoryApiTest extends TestCase
             'name' => 'Smartphones'
         ]);
 
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
 
         $response->assertStatus(200)
                 ->assertJson([
@@ -81,14 +81,14 @@ class SubcategoryApiTest extends TestCase
         $subcategory = Subcategory::factory()->create(['category_id' => $otherCategory->id]);
 
         // Try to access subcategory through wrong category
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
 
         $response->assertStatus(404);
     }
 
     public function test_public_cannot_access_nonexistent_subcategory()
     {
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories/nonexistent-subcategory");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories/nonexistent-subcategory");
 
         $response->assertStatus(404);
     }
@@ -105,11 +105,11 @@ class SubcategoryApiTest extends TestCase
         $subcategory = Subcategory::factory()->create(['category_id' => $this->category->id]);
 
         // Test list endpoint
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories");
         $response->assertStatus(200);
 
         // Test show endpoint
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories/{$subcategory->slug}");
         $response->assertStatus(200);
     }
 
@@ -117,7 +117,7 @@ class SubcategoryApiTest extends TestCase
     {
         $emptyCategory = Category::factory()->create(['name' => 'Empty Category']);
 
-        $response = $this->getJson("/api/v1/categories/{$emptyCategory->slug}/subcategories");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$emptyCategory->slug}/subcategories");
 
         $response->assertStatus(200);
         
@@ -144,7 +144,7 @@ class SubcategoryApiTest extends TestCase
             'name' => 'Fiction'
         ]);
 
-        $response = $this->getJson("/api/v1/categories/{$this->category->slug}/subcategories");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}/subcategories");
 
         $response->assertStatus(200);
         

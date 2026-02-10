@@ -44,7 +44,7 @@ class AttributeApiTest extends TestCase
             'value' => 'Large'
         ]);
 
-        $response = $this->getJson('/api/v1/attributes');
+        $response = $this->getJsonWithCity('/api/v1/attributes');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -124,7 +124,7 @@ class AttributeApiTest extends TestCase
             'value' => 'Red'
         ]);
 
-        $response = $this->getJson('/api/v1/attributes');
+        $response = $this->getJsonWithCity('/api/v1/attributes');
 
         $response->assertStatus(200);
 
@@ -141,7 +141,7 @@ class AttributeApiTest extends TestCase
     
     public function test_attribute_not_found_returns_404()
     {
-        $response = $this->getJson('/api/v1/attributes/non-existent-slug');
+        $response = $this->getJsonWithCity('/api/v1/attributes/non-existent-slug');
         $response->assertStatus(404);
     }
 
@@ -153,7 +153,7 @@ class AttributeApiTest extends TestCase
             'value' => 'Red'
         ]);
 
-        $response = $this->getJson('/api/v1/attributes');
+        $response = $this->getJsonWithCity('/api/v1/attributes');
 
         $response->assertStatus(200);
 

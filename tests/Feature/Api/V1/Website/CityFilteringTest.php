@@ -11,6 +11,7 @@ use App\Models\Subcategory;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CityFilteringTest extends TestCase
@@ -82,7 +83,7 @@ class CityFilteringTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_products_can_be_filtered_by_city_header()
     {
         // Request products with Cairo header
@@ -101,7 +102,7 @@ class CityFilteringTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function test_shops_can_be_filtered_by_city_header()
     {
         // Request shops with Alexandria header
@@ -115,7 +116,7 @@ class CityFilteringTest extends TestCase
         $this->assertIsArray($shops);
     }
 
-    /** @test */
+    #[Test]
     public function test_invalid_city_header_format_returns_error()
     {
         $response = $this->withHeader('X-City', 'Cairo123!')
@@ -130,7 +131,7 @@ class CityFilteringTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_nonexistent_city_returns_error()
     {
         $response = $this->withHeader('X-City', 'nonexistent-city')
@@ -145,7 +146,7 @@ class CityFilteringTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_missing_city_header_returns_all_products()
     {
         // Request without city header
@@ -158,7 +159,7 @@ class CityFilteringTest extends TestCase
         $this->assertIsArray($products);
     }
 
-    /** @test */
+    #[Test]
     public function test_offers_can_be_filtered_by_city()
     {
         // Add discounts to products
@@ -182,7 +183,7 @@ class CityFilteringTest extends TestCase
         $this->assertIsArray($offers);
     }
 
-    /** @test */
+    #[Test]
     public function test_city_header_is_case_insensitive()
     {
         // Test with lowercase
@@ -198,7 +199,7 @@ class CityFilteringTest extends TestCase
         $response2->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_city_filtering_works_with_pagination()
     {
         // Create more products in Cairo

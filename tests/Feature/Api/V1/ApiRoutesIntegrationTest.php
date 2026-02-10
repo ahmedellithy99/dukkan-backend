@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\City;
 use App\Models\Governorate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ApiRoutesIntegrationTest extends TestCase
@@ -53,38 +54,38 @@ class ApiRoutesIntegrationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_api_returns_json_responses()
     {
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertHeader('Content-Type', 'application/json');
     }
 
-    /** @test */
+    #[Test]
     public function test_api_includes_version_header()
     {
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertHeader('X-API-Version', 'v1.0.0');
     }
 
-    /** @test */
+    #[Test]
     public function test_public_endpoints_are_accessible_without_authentication()
     {
-        $this->getJson('/api/v1/shops')->assertOk();
-        $this->getJson('/api/v1/products')->assertOk();
-        $this->getJson('/api/v1/categories')->assertOk();
+        $this->getJsonWithCity('/api/v1/shops')->assertOk();
+        $this->getJsonWithCity('/api/v1/products')->assertOk();
+        $this->getJsonWithCity('/api/v1/categories')->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_protected_endpoints_require_authentication()
     {
         $this->getJson('/api/v1/vendor/me')->assertUnauthorized();
         $this->getJson('/api/v1/admin/me')->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_authentication_flow()
     {
         // Register
@@ -124,7 +125,7 @@ class ApiRoutesIntegrationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_authentication_flow()
     {
         $loginResponse = $this->postJson('/api/v1/admin/login', [
@@ -140,7 +141,7 @@ class ApiRoutesIntegrationTest extends TestCase
         $this->assertEquals('admin', $meResponse->json('data.user.role'));
     }
 
-    /** @test */
+    #[Test]
     public function test_complete_shop_management_workflow()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -179,7 +180,7 @@ class ApiRoutesIntegrationTest extends TestCase
         // The core CRUD functionality (Create, Read, List) is working correctly
     }
 
-    /** @test */
+    #[Test]
     public function test_complete_product_management_workflow()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -230,36 +231,36 @@ class ApiRoutesIntegrationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_public_product_discovery_workflow()
     {
         // Browse products
-        $productsResponse = $this->getJson('/api/v1/products');
+        $productsResponse = $this->getJsonWithCity('/api/v1/products');
         $productsResponse->assertOk();
 
         // View product details - use slug
-        $productResponse = $this->getJson("/api/v1/products/{$this->product->slug}");
+        $productResponse = $this->getJsonWithCity("/api/v1/products/{$this->product->slug}");
         $productResponse->assertOk();
         $this->assertEquals($this->product->name, $productResponse->json('data.name'));
 
         // Browse shops
-        $shopsResponse = $this->getJson('/api/v1/shops');
+        $shopsResponse = $this->getJsonWithCity('/api/v1/shops');
         $shopsResponse->assertOk();
 
         // View shop details - use slug
-        $shopResponse = $this->getJson("/api/v1/shops/{$this->shop->slug}");
+        $shopResponse = $this->getJsonWithCity("/api/v1/shops/{$this->shop->slug}");
         $shopResponse->assertOk();
 
         // Browse categories
-        $categoriesResponse = $this->getJson('/api/v1/categories');
+        $categoriesResponse = $this->getJsonWithCity('/api/v1/categories');
         $categoriesResponse->assertOk();
 
         // View category with subcategories - use slug
-        $categoryResponse = $this->getJson("/api/v1/categories/{$this->category->slug}");
+        $categoryResponse = $this->getJsonWithCity("/api/v1/categories/{$this->category->slug}");
         $categoryResponse->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_category_management_workflow()
     {
         $token = $this->admin->createToken('test')->plainTextToken;
@@ -292,7 +293,7 @@ class ApiRoutesIntegrationTest extends TestCase
         $updateResponse->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function test_analytics_tracking_workflow()
     {
         // Track WhatsApp click - use slug
@@ -311,7 +312,7 @@ class ApiRoutesIntegrationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_rate_limiting_is_applied()
     {
         // Rate limiting is configured in AppServiceProvider
@@ -320,7 +321,7 @@ class ApiRoutesIntegrationTest extends TestCase
         
         $responses = [];
         for ($i = 0; $i < 5; $i++) {
-            $responses[] = $this->getJson('/api/v1/products');
+            $responses[] = $this->getJsonWithCity('/api/v1/products');
         }
 
         // All requests should succeed (under the limit)
@@ -334,10 +335,10 @@ class ApiRoutesIntegrationTest extends TestCase
         $this->assertTrue(true); // Rate limiting configuration exists
     }
 
-    /** @test */
+    #[Test]
     public function test_cors_headers_are_present()
     {
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         // API should return successful response
         $response->assertOk();
@@ -347,7 +348,7 @@ class ApiRoutesIntegrationTest extends TestCase
         $this->assertTrue(file_exists(base_path('config/cors.php')));
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_cannot_access_other_vendor_resources()
     {
         $otherVendor = User::factory()->create(['role' => 'vendor', 'status' => 'active']);
@@ -378,7 +379,7 @@ class ApiRoutesIntegrationTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function test_validation_errors_return_proper_format()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -398,7 +399,7 @@ class ApiRoutesIntegrationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_pagination_works_correctly()
     {
         // Create an active shop for the products
@@ -419,7 +420,7 @@ class ApiRoutesIntegrationTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson('/api/v1/products?per_page=10');
+        $response = $this->getJsonWithCity('/api/v1/products?per_page=10');
 
         $response->assertOk();
         

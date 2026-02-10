@@ -50,7 +50,7 @@ class OffersApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson('/api/v1/offers');
+        $response = $this->getJsonWithCity('/api/v1/offers');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -106,7 +106,7 @@ class OffersApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson('/api/v1/offers');
+        $response = $this->getJsonWithCity('/api/v1/offers');
 
         $response->assertStatus(200);
 
@@ -152,7 +152,7 @@ class OffersApiTest extends TestCase
             'is_active' => false,
         ]);
 
-        $response = $this->getJson('/api/v1/offers');
+        $response = $this->getJsonWithCity('/api/v1/offers');
 
         $response->assertStatus(200);
 
@@ -163,7 +163,7 @@ class OffersApiTest extends TestCase
 
     public function test_offers_endpoint_does_not_require_authentication()
     {
-        $response = $this->getJson('/api/v1/offers');
+        $response = $this->getJsonWithCity('/api/v1/offers');
 
         // Should not return 401 Unauthorized
         $response->assertStatus(200);
@@ -171,7 +171,7 @@ class OffersApiTest extends TestCase
 
     public function test_empty_offers_returns_empty_array()
     {
-        $response = $this->getJson('/api/v1/offers');
+        $response = $this->getJsonWithCity('/api/v1/offers');
 
         $response->assertStatus(200)
                 ->assertJson([

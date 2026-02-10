@@ -16,7 +16,7 @@ class CategoryApiTest extends TestCase
         // Create test categories
         $categories = Category::factory()->count(3)->create();
 
-        $response = $this->getJson('/api/v1/categories');
+        $response = $this->getJsonWithCity('/api/v1/categories');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -41,7 +41,7 @@ class CategoryApiTest extends TestCase
         // Create some subcategories
         Subcategory::factory()->count(2)->create(['category_id' => $category->id]);
 
-        $response = $this->getJson("/api/v1/categories/{$category->slug}");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$category->slug}");
 
         $response->assertStatus(200)
                 ->assertJson([
@@ -75,7 +75,7 @@ class CategoryApiTest extends TestCase
 
     public function test_public_cannot_access_nonexistent_category()
     {
-        $response = $this->getJson('/api/v1/categories/nonexistent-category');
+        $response = $this->getJsonWithCity('/api/v1/categories/nonexistent-category');
 
         $response->assertStatus(404);
     }
@@ -85,11 +85,11 @@ class CategoryApiTest extends TestCase
         $category = Category::factory()->create();
 
         // Test list endpoint
-        $response = $this->getJson('/api/v1/categories');
+        $response = $this->getJsonWithCity('/api/v1/categories');
         $response->assertStatus(200);
 
         // Test show endpoint
-        $response = $this->getJson("/api/v1/categories/{$category->slug}");
+        $response = $this->getJsonWithCity("/api/v1/categories/{$category->slug}");
         $response->assertStatus(200);
     }
 }

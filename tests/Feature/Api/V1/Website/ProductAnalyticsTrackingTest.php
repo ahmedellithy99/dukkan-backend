@@ -22,7 +22,7 @@ class ProductAnalyticsTrackingTest extends TestCase
         $product = $this->createProduct();
 
         // View product
-        $response = $this->getJson("/api/v1/products/{$product->slug}");
+        $response = $this->getJsonWithCity("/api/v1/products/{$product->slug}");
 
         $response->assertOk();
 
@@ -41,7 +41,7 @@ class ProductAnalyticsTrackingTest extends TestCase
 
         // View product multiple times
         for ($i = 0; $i < 5; $i++) {
-            $this->getJson("/api/v1/products/{$product->slug}");
+            $this->getJsonWithCity("/api/v1/products/{$product->slug}");
         }
 
         // Verify views were tracked
@@ -102,8 +102,8 @@ class ProductAnalyticsTrackingTest extends TestCase
         $product = $this->createProduct();
 
         // Track different interactions
-        $this->getJson("/api/v1/products/{$product->slug}"); // View
-        $this->getJson("/api/v1/products/{$product->slug}"); // View
+        $this->getJsonWithCity("/api/v1/products/{$product->slug}"); // View
+        $this->getJsonWithCity("/api/v1/products/{$product->slug}"); // View
         $this->postJson("/api/v1/products/{$product->slug}/track/whatsapp"); // WhatsApp
         $this->postJson("/api/v1/products/{$product->slug}/track/location"); // Location
         $this->postJson("/api/v1/products/{$product->slug}/track/location"); // Location
@@ -122,7 +122,7 @@ class ProductAnalyticsTrackingTest extends TestCase
         $product = $this->createProduct();
 
         // Guest user views product
-        $response = $this->getJson("/api/v1/products/{$product->slug}");
+        $response = $this->getJsonWithCity("/api/v1/products/{$product->slug}");
         $response->assertOk();
 
         // Guest user tracks WhatsApp click

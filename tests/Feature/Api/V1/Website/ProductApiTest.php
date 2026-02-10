@@ -46,7 +46,7 @@ class ProductApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson("/api/v1/products/{$product->slug}");
+        $response = $this->getJsonWithCity("/api/v1/products/{$product->slug}");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -112,7 +112,7 @@ class ProductApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->getJson('/api/v1/products?search=Red');
+        $response = $this->getJsonWithCity('/api/v1/products?search=Red');
 
         $response->assertStatus(200);
         $this->assertCount(1, $response->json('data'));

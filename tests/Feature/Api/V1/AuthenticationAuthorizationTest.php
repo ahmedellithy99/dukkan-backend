@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\City;
 use App\Models\Governorate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AuthenticationAuthorizationTest extends TestCase
@@ -35,7 +36,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_registration_creates_user_and_returns_token()
     {
         $response = $this->postJson('/api/v1/vendor/register', [
@@ -60,7 +61,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_registration_validates_required_fields()
     {
         $response = $this->postJson('/api/v1/vendor/register', []);
@@ -76,7 +77,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_registration_prevents_duplicate_email()
     {
         $response = $this->postJson('/api/v1/vendor/register', [
@@ -93,7 +94,7 @@ class AuthenticationAuthorizationTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_login_with_valid_credentials()
     {
         $response = $this->postJson('/api/v1/vendor/login', [
@@ -110,7 +111,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_login_fails_with_invalid_credentials()
     {
         $response = $this->postJson('/api/v1/vendor/login', [
@@ -121,7 +122,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_login_with_valid_credentials()
     {
         $response = $this->postJson('/api/v1/admin/login', [
@@ -138,7 +139,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_admin_login_rejects_non_admin_users()
     {
         $response = $this->postJson('/api/v1/admin/login', [
@@ -149,7 +150,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertForbidden(); // 403 is correct for wrong role
     }
 
-    /** @test */
+    #[Test]
     public function test_authenticated_user_can_access_me_endpoint()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -168,7 +169,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_logout_invalidates_token()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -186,7 +187,7 @@ class AuthenticationAuthorizationTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_can_only_access_own_shops()
     {
         $otherVendor = User::factory()->create(['role' => 'vendor']);
@@ -208,7 +209,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_cannot_update_other_vendor_shop()
     {
         $otherVendor = User::factory()->create(['role' => 'vendor']);
@@ -233,7 +234,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_cannot_delete_other_vendor_shop()
     {
         $otherVendor = User::factory()->create(['role' => 'vendor']);
@@ -254,7 +255,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function test_unauthenticated_requests_return_401()
     {
         $endpoints = [
@@ -271,7 +272,7 @@ class AuthenticationAuthorizationTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function test_invalid_token_returns_401()
     {
         $response = $this->withHeader('Authorization', 'Bearer invalid-token')
@@ -280,7 +281,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function test_vendor_cannot_access_admin_endpoints()
     {
         $token = $this->vendor->createToken('test')->plainTextToken;
@@ -292,7 +293,7 @@ class AuthenticationAuthorizationTest extends TestCase
         $this->assertContains($response->status(), [401, 403]);
     }
 
-    /** @test */
+    #[Test]
     public function test_rate_limiting_on_authentication_endpoints()
     {
         // Make multiple failed login attempts
@@ -311,7 +312,7 @@ class AuthenticationAuthorizationTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function test_password_confirmation_required_for_registration()
     {
         $response = $this->postJson('/api/v1/vendor/register', [
@@ -327,7 +328,7 @@ class AuthenticationAuthorizationTest extends TestCase
         });
     }
 
-    /** @test */
+    #[Test]
     public function test_password_must_match_confirmation()
     {
         $response = $this->postJson('/api/v1/vendor/register', [

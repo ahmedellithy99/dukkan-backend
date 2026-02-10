@@ -145,7 +145,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_list_active_shops_only()
     {
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -198,7 +198,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_filter_shops_by_area()
     {
-        $response = $this->getJson('/api/v1/shops?area=Downtown');
+        $response = $this->getJsonWithCity('/api/v1/shops?area=Downtown');
 
         $response->assertStatus(200);
 
@@ -211,7 +211,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_search_shops_by_name()
     {
-        $response = $this->getJson('/api/v1/shops?search=Electronics');
+        $response = $this->getJsonWithCity('/api/v1/shops?search=Electronics');
 
         $response->assertStatus(200);
 
@@ -225,7 +225,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_search_shops_by_description()
     {
-        $response = $this->getJson('/api/v1/shops?search=fashion');
+        $response = $this->getJsonWithCity('/api/v1/shops?search=fashion');
 
         $response->assertStatus(200);
 
@@ -239,7 +239,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_sort_shops_by_name_ascending()
     {
-        $response = $this->getJson('/api/v1/shops?sort=name');
+        $response = $this->getJsonWithCity('/api/v1/shops?sort=name');
 
         $response->assertStatus(200);
 
@@ -254,7 +254,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_sort_shops_by_name_descending()
     {
-        $response = $this->getJson('/api/v1/shops?sort=-name');
+        $response = $this->getJsonWithCity('/api/v1/shops?sort=-name');
 
         $response->assertStatus(200);
 
@@ -269,7 +269,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_sort_shops_by_created_at_descending()
     {
-        $response = $this->getJson('/api/v1/shops?sort=-created_at');
+        $response = $this->getJsonWithCity('/api/v1/shops?sort=-created_at');
 
         $response->assertStatus(200);
 
@@ -309,7 +309,7 @@ class ShopApiTest extends TestCase
             ]);
         }
 
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -358,7 +358,7 @@ class ShopApiTest extends TestCase
 
     public function test_can_view_active_shop_by_slug()
     {
-        $response = $this->getJson("/api/v1/shops/{$this->activeShop->slug}");
+        $response = $this->getJsonWithCity("/api/v1/shops/{$this->activeShop->slug}");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -399,7 +399,7 @@ class ShopApiTest extends TestCase
 
     public function test_cannot_view_inactive_shop()
     {
-        $response = $this->getJson("/api/v1/shops/{$this->inactiveShop->slug}");
+        $response = $this->getJsonWithCity("/api/v1/shops/{$this->inactiveShop->slug}");
 
         $response->assertStatus(404)
                 ->assertJson([
@@ -426,7 +426,7 @@ class ShopApiTest extends TestCase
             'is_active' => false,
         ]);
 
-        $response = $this->getJson("/api/v1/shops/{$this->shopWithProducts->slug}");
+        $response = $this->getJsonWithCity("/api/v1/shops/{$this->shopWithProducts->slug}");
 
         $response->assertStatus(200);
 
@@ -441,7 +441,7 @@ class ShopApiTest extends TestCase
 
     public function test_shop_show_handles_non_existent_shop()
     {
-        $response = $this->getJson('/api/v1/shops/non-existent-shop-slug');
+        $response = $this->getJsonWithCity('/api/v1/shops/non-existent-shop-slug');
 
         $response->assertStatus(404)
                 ->assertJson([
@@ -456,7 +456,7 @@ class ShopApiTest extends TestCase
     public function test_shop_show_includes_media_when_available()
     {
         // Test that logo field is present in response (can be null if no media)
-        $response = $this->getJson("/api/v1/shops/{$this->activeShop->slug}");
+        $response = $this->getJsonWithCity("/api/v1/shops/{$this->activeShop->slug}");
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -474,7 +474,7 @@ class ShopApiTest extends TestCase
 
     public function test_api_responses_include_version_information()
     {
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -496,8 +496,8 @@ class ShopApiTest extends TestCase
 
     public function test_api_responses_are_consistent()
     {
-        $indexResponse = $this->getJson('/api/v1/shops');
-        $showResponse = $this->getJson("/api/v1/shops/{$this->activeShop->slug}");
+        $indexResponse = $this->getJsonWithCity('/api/v1/shops');
+        $showResponse = $this->getJsonWithCity("/api/v1/shops/{$this->activeShop->slug}");
 
         // Both should have consistent structure
         $indexResponse->assertJsonStructure(['api_version', 'success', 'data', 'meta']);
@@ -533,7 +533,7 @@ class ShopApiTest extends TestCase
         }
 
         $startTime = microtime(true);
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
         $endTime = microtime(true);
 
         $response->assertStatus(200);
@@ -547,7 +547,7 @@ class ShopApiTest extends TestCase
 
     public function test_handles_invalid_filter_values_gracefully()
     {
-        $response = $this->getJson('/api/v1/shops?city_id=invalid&sort=invalid_field');
+        $response = $this->getJsonWithCity('/api/v1/shops?city_id=invalid&sort=invalid_field');
 
         $response->assertStatus(200);
         // Should return results without filtering by invalid city_id
@@ -559,7 +559,7 @@ class ShopApiTest extends TestCase
         // Delete all shops
         Shop::query()->delete();
 
-        $response = $this->getJson('/api/v1/shops');
+        $response = $this->getJsonWithCity('/api/v1/shops');
 
         $response->assertStatus(200)
                 ->assertJson([
@@ -570,7 +570,7 @@ class ShopApiTest extends TestCase
 
     public function test_handles_special_characters_in_search()
     {
-        $response = $this->getJson('/api/v1/shops?search=' . urlencode('test@#$%^&*()'));
+        $response = $this->getJsonWithCity('/api/v1/shops?search=' . urlencode('test@#$%^&*()'));
 
         $response->assertStatus(200);
         // Should handle special characters without errors
