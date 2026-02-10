@@ -18,6 +18,7 @@ class ProductStats extends Model
         'views_count',
         'whatsapp_clicks',
         'sms_clicks',
+        'location_clicks',
         'favorites_count',
         'last_viewed_at',
         'updated_at',
@@ -27,6 +28,7 @@ class ProductStats extends Model
         'views_count' => 'integer',
         'whatsapp_clicks' => 'integer',
         'sms_clicks' => 'integer',
+        'location_clicks' => 'integer',
         'favorites_count' => 'integer',
         'last_viewed_at' => 'datetime',
     ];

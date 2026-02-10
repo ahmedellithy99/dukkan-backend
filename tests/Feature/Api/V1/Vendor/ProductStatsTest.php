@@ -29,6 +29,7 @@ class ProductStatsTest extends TestCase
             'product_id' => $product->id,
             'views_count' => 100,
             'whatsapp_clicks' => 25,
+            'location_clicks' => 30,
             'favorites_count' => 15,
             'last_viewed_at' => now(),
         ]);
@@ -44,6 +45,7 @@ class ProductStatsTest extends TestCase
                     'product_id',
                     'views_count',
                     'whatsapp_clicks',
+                    'location_clicks',
                     'favorites_count',
                     'last_viewed_at',
                     'created_at',
@@ -56,6 +58,7 @@ class ProductStatsTest extends TestCase
                     'product_id' => $product->id,
                     'views_count' => 100,
                     'whatsapp_clicks' => 25,
+                    'location_clicks' => 30,
                     'favorites_count' => 15,
                 ],
             ]);
@@ -77,6 +80,7 @@ class ProductStatsTest extends TestCase
                     'product_id' => $product->id,
                     'views_count' => 0,
                     'whatsapp_clicks' => 0,
+                    'location_clicks' => 0,
                     'favorites_count' => 0,
                     'last_viewed_at' => null,
                 ],

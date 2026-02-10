@@ -30,6 +30,7 @@ class ProductStatsController extends Controller
                 'product_id' => $product->id,
                 'views_count' => 0,
                 'whatsapp_clicks' => 0,
+                'location_clicks' => 0,
                 'favorites_count' => 0,
                 'last_viewed_at' => null,
             ]);

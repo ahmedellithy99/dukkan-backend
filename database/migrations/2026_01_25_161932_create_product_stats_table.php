@@ -15,6 +15,7 @@ return new class() extends Migration
             $table->foreignId('product_id')->primary()->constrained('products')->onDelete('cascade');
             $table->unsignedBigInteger('views_count')->default(0);
             $table->unsignedBigInteger('whatsapp_clicks')->default(0);
+            $table->unsignedBigInteger('location_clicks')->default(0);
             $table->unsignedBigInteger('sms_clicks')->default(0);
             $table->unsignedBigInteger('favorites_count')->default(0);
             $table->timestamp('last_viewed_at')->nullable();
