@@ -6,21 +6,34 @@ use App\Filters\Website\ProductFilter;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ProductService
 {
     /**
      * Get active products with filtering and pagination for public website.
+     * Filters by city if X-City header is provided.
+     * Uses JOIN for better performance instead of subquery.
      */
-    public function getProducts(Request $request, int $perPage = 20)
+    public function getProducts(Request $request, int $perPage = 20): LengthAwarePaginator
     {
-        return Product::with(['media'])
-            ->where('is_active', true)
-            // ->whereHas('shop', function ($query) {
-            //     $query->where('is_active', true);
-            // })
-            ->filter(new ProductFilter($request))
-            ->get();
+        $query = Product::query()
+            ->select('products.*')
+            ->with(['media'])
+            ->where('products.is_active', true);
+
+        // Filter by city if provided via X-City header
+        // Using JOIN instead of whereHas for better performance
+        $city = $request->attributes->get('city');
+        if ($city) {
+            $query->join('shops', 'products.shop_id', '=', 'shops.id')
+                  ->join('locations', 'shops.location_id', '=', 'locations.id')
+                  ->where('locations.city_id', $city->id);
+        }
+
+        return $query->filter(new ProductFilter($request))
+            ->paginate($perPage)
+            ->appends($request->query());
     }
 
     /**
@@ -37,19 +50,34 @@ class ProductService
 
     /**
      * Get products with active discounts ordered by discount value for homepage offers.
+     * Filters by city if X-City header is provided.
+     * Uses JOIN for better performance instead of subquery.
      */
-    public function getOffers(Request $request, int $perPage = 20)
+    public function getOffers(Request $request, int $perPage = 20): Collection
     {
-        return Product::with(['media'])
-            ->where('is_active', true)
-            ->onDiscount()
-            ->orderByRaw('
+        $query = Product::query()
+            ->select('products.*')
+            ->with(['media'])
+            ->where('products.is_active', true)
+            ->onDiscount();
+
+        // Filter by city if provided via X-City header
+        // Using JOIN instead of whereHas for better performance
+        $city = $request->attributes->get('city');
+        if ($city) {
+            $query->join('shops', 'products.shop_id', '=', 'shops.id')
+                  ->join('locations', 'shops.location_id', '=', 'locations.id')
+                  ->where('locations.city_id', $city->id);
+        }
+
+        return $query->orderByRaw('
                 CASE 
-                    WHEN discount_type = "percent" THEN price * (discount_value / 100)
-                    WHEN discount_type = "amount" THEN discount_value
+                    WHEN products.discount_type = "percent" THEN products.price * (products.discount_value / 100)
+                    WHEN products.discount_type = "amount" THEN products.discount_value
                     ELSE 0
                 END DESC
             ')
+            ->limit($perPage)
             ->get();
     }
 }

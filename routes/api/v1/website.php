@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('throttle:public')->group(function () {
+// Apply city resolution middleware to all website routes
+Route::middleware('city.resolve')->group(function () {
     Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
 
     Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
