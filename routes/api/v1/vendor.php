@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Vendor\AuthController;
 use App\Http\Controllers\Api\V1\Vendor\LocationController;
 use App\Http\Controllers\Api\V1\Vendor\ProductController;
+use App\Http\Controllers\Api\V1\Vendor\ProductStatsController;
 use App\Http\Controllers\Api\V1\Vendor\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,5 +41,8 @@ Route::prefix('vendor')->group(function () {
         Route::put('my-shop/{shop}/products/{product}/stock', [ProductController::class, 'updateStock'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/apply-discount', [ProductController::class, 'applyDiscount'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/remove-discount', [ProductController::class, 'removeDiscount'])->scopeBindings();
+
+        // Product analytics
+        Route::get('products/{product}/stats', [ProductStatsController::class, 'show']);
     });
 });
