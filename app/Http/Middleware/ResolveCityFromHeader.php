@@ -13,11 +13,6 @@ class ResolveCityFromHeader
     {
         $citySlug = $request->header('X-City');
 
-        // If city is optional for some endpoints, allow missing header
-        if (!$citySlug) {
-            return $next($request);
-        }
-
         $citySlug = strtolower(trim($citySlug));
 
         // Basic slug validation (avoid weird inputs)
