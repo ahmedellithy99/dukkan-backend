@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Website\CategoryController;
 use App\Http\Controllers\Api\V1\Website\SubcategoryController;
 use App\Http\Controllers\Api\V1\Website\AttributeController;
 use App\Http\Controllers\Api\V1\Website\ProductController;
+use App\Http\Controllers\Api\V1\Website\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 // Apply city resolution middleware to all website routes
 Route::middleware('city.resolve')->group(function () {
+    // Search endpoints
+    Route::get('search/suggestions', [SearchController::class, 'suggestions']);
+    Route::get('search', [SearchController::class, 'search']);
+
     Route::apiResource('shops', ShopController::class)->only(['index', 'show']);
 
     Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
