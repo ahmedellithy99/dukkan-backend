@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,22 +14,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed hierarchical location data first
+        $this->command->info('🌱 Starting database seeding...');
+
+        // 1. Seed hierarchical location data first
+        $this->command->info('📍 Seeding locations...');
         $this->call([
             GovernorateSeeder::class,
             CitySeeder::class,
+            LocationSeeder::class,
         ]);
 
-        // Seed admin users
+        // 2. Seed users (admin and vendors)
+        $this->command->info('👥 Seeding users...');
         $this->call([
             AdminSeeder::class,
+            VendorSeeder::class,
         ]);
 
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 3. Seed categories and subcategories
+        $this->command->info('📂 Seeding categories...');
+        $this->call([
+            CategorySeeder::class,
         ]);
+
+        // 4. Seed attributes and attribute values
+        $this->command->info('🏷️  Seeding attributes...');
+        $this->call([
+            AttributeSeeder::class,
+        ]);
+
+        // 5. Seed shops
+        $this->command->info('🏪 Seeding shops...');
+        $this->call([
+            ShopSeeder::class,
+        ]);
+
+        // 6. Seed products with attributes and stats
+        $this->command->info('📦 Seeding products...');
+        $this->call([
+            ProductSeeder::class,
+        ]);
+
+        $this->command->info('✅ Database seeding completed successfully!');
     }
 }

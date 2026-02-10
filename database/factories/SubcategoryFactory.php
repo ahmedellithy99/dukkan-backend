@@ -24,6 +24,7 @@ class SubcategoryFactory extends Factory
         return [
             'category_id' => \App\Models\Category::factory(),
             'name' => $name,
+            'slug' => \Illuminate\Support\Str::slug($name) . '-' . $this->faker->unique()->numberBetween(1, 10000),
         ];
     }
 }
