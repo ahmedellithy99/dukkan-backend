@@ -15,6 +15,7 @@ class AdCarousel extends Model implements HasMedia
 
     protected $fillable = [
         'title',
+        'link_url',
         'display_order',
     ];
 

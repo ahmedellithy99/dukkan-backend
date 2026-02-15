@@ -18,6 +18,7 @@ class AdCarouselFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(3),
+            'link_url' => $this->faker->optional(0.7)->url(), // 70% chance of having a URL
             'display_order' => $this->faker->numberBetween(0, 100),
         ];
     }

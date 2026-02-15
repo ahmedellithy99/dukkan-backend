@@ -18,6 +18,7 @@ class AdCarouselResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'link_url' => $this->link_url,
             'display_order' => $this->display_order,
 
             // Media

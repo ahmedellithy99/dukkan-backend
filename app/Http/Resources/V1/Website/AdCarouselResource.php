@@ -16,7 +16,9 @@ class AdCarouselResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'display_order' => $this->display_order,
+            'link_url' => $this->link_url,
 
             // Media
             'carousel_image' => $this->whenLoaded('media', function () {

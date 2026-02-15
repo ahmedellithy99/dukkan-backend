@@ -21,6 +21,7 @@ class StoreAdCarouselRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'link_url' => 'nullable|url|max:500',
             'carousel_image' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
         ];
     }
@@ -33,6 +34,8 @@ class StoreAdCarouselRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'title.max' => 'The title cannot exceed 255 characters.',
+            'link_url.url' => 'The link URL must be a valid URL.',
+            'link_url.max' => 'The link URL cannot exceed 500 characters.',
             'carousel_image.required' => 'The carousel image is required.',
             'carousel_image.image' => 'The file must be an image.',
             'carousel_image.mimes' => 'The image must be a file of type: jpeg, jpg, png, webp.',
