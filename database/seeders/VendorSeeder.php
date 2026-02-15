@@ -15,14 +15,6 @@ class VendorSeeder extends Seeder
     {
         $vendors = [
             [
-                'name' => 'Ahmed Mohamed',
-                'email' => 'ahmed.vendor@dukkan.com',
-                'phone' => '+201001234567',
-                'password' => Hash::make('vendor123'),
-                'role' => 'vendor',
-                'status' => 'active',
-            ],
-            [
                 'name' => 'Fatma Hassan',
                 'email' => 'fatma.vendor@dukkan.com',
                 'phone' => '+201002345678',
@@ -42,14 +34,6 @@ class VendorSeeder extends Seeder
                 'name' => 'Sara Ibrahim',
                 'email' => 'sara.vendor@dukkan.com',
                 'phone' => '+201004567890',
-                'password' => Hash::make('vendor123'),
-                'role' => 'vendor',
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Khaled Mahmoud',
-                'email' => 'khaled.vendor@dukkan.com',
-                'phone' => '+201005678901',
                 'password' => Hash::make('vendor123'),
                 'role' => 'vendor',
                 'status' => 'active',

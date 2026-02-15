@@ -131,30 +131,30 @@ class ProductSeeder extends Seeder
         }
 
         // Create additional random products in local/testing environments
-        if (app()->environment(['local', 'testing'])) {
-            $additionalProducts = Product::factory()->count(40)->create();
+        // if (app()->environment(['local', 'testing'])) {
+        //     $additionalProducts = Product::factory()->count(40)->create();
             
-            // Attach random attributes to additional products
-            foreach ($additionalProducts as $product) {
-                $attributeIds = collect([
-                    $sizes->random(),
-                    $colors->random(),
-                    $genders->random(),
-                ])->filter()->unique()->values();
+        //     // Attach random attributes to additional products
+        //     foreach ($additionalProducts as $product) {
+        //         $attributeIds = collect([
+        //             $sizes->random(),
+        //             $colors->random(),
+        //             $genders->random(),
+        //         ])->filter()->unique()->values();
                 
-                if ($attributeIds->isNotEmpty()) {
-                    $product->attributeValues()->attach($attributeIds);
-                }
+        //         if ($attributeIds->isNotEmpty()) {
+        //             $product->attributeValues()->attach($attributeIds);
+        //         }
 
-                // Create stats for additional products
-                ProductStats::create([
-                    'product_id' => $product->id,
-                    'views_count' => rand(0, 1000),
-                    'whatsapp_clicks' => rand(0, 100),
-                    'favorites_count' => rand(0, 200),
-                    'last_viewed_at' => now()->subDays(rand(0, 60)),
-                ]);
-            }
-        }
+        //         // Create stats for additional products
+        //         ProductStats::create([
+        //             'product_id' => $product->id,
+        //             'views_count' => rand(0, 1000),
+        //             'whatsapp_clicks' => rand(0, 100),
+        //             'favorites_count' => rand(0, 200),
+        //             'last_viewed_at' => now()->subDays(rand(0, 60)),
+        //         ]);
+        //     }
+        // }
     }
 }

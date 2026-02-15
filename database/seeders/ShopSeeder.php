@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AttributeValue;
 use App\Models\Location;
+use App\Models\Product;
+use App\Models\ProductStats;
 use App\Models\Shop;
+use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -15,12 +19,24 @@ class ShopSeeder extends Seeder
     public function run(): void
     {
         $vendors = User::where('role', 'vendor')->get();
-        $locations = Location::all();
+        $subcategories = Subcategory::all();
 
-        if ($vendors->isEmpty() || $locations->isEmpty()) {
-            $this->command->warn('No vendors or locations found. Skipping shop seeding.');
+        if ($vendors->isEmpty()) {
+            $this->command->warn('No vendors found. Skipping shop seeding.');
             return;
         }
+
+        if ($subcategories->isEmpty()) {
+            $this->command->warn('No subcategories found. Skipping shop seeding.');
+            return;
+        }
+
+        // Get attribute values for products
+        $sizes = AttributeValue::whereHas('attribute', fn($q) => $q->where('name', 'Size'))->pluck('id');
+        $colors = AttributeValue::whereHas('attribute', fn($q) => $q->where('name', 'Color'))->pluck('id');
+        $genders = AttributeValue::whereHas('attribute', fn($q) => $q->where('name', 'Gender'))->pluck('id');
+        $materials = AttributeValue::whereHas('attribute', fn($q) => $q->where('name', 'Material'))->pluck('id');
+        $conditions = AttributeValue::whereHas('attribute', fn($q) => $q->where('name', 'Condition'))->pluck('id');
 
         $shops = [
             [
@@ -29,13 +45,7 @@ class ShopSeeder extends Seeder
                 'whatsapp_number' => '+201001234567',
                 'phone_number' => '+201001234567',
                 'is_active' => true,
-            ],
-            [
-                'name' => 'Tech Store',
-                'description' => 'Latest electronics and gadgets at competitive prices',
-                'whatsapp_number' => '+201002345678',
-                'phone_number' => '+201002345678',
-                'is_active' => true,
+                'products_count' => 25,
             ],
             [
                 'name' => 'Shoe Palace',
@@ -43,13 +53,7 @@ class ShopSeeder extends Seeder
                 'whatsapp_number' => '+201003456789',
                 'phone_number' => '+201003456789',
                 'is_active' => true,
-            ],
-            [
-                'name' => 'Home Essentials',
-                'description' => 'Everything you need for your home',
-                'whatsapp_number' => '+201004567890',
-                'phone_number' => '+201004567890',
-                'is_active' => true,
+                'products_count' => 20,
             ],
             [
                 'name' => 'Sports Corner',
@@ -57,43 +61,14 @@ class ShopSeeder extends Seeder
                 'whatsapp_number' => '+201005678901',
                 'phone_number' => '+201005678901',
                 'is_active' => true,
-            ],
-            [
-                'name' => 'Beauty Boutique',
-                'description' => 'Premium beauty and skincare products',
-                'whatsapp_number' => '+201006789012',
-                'phone_number' => '+201006789012',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Book Haven',
-                'description' => 'Wide selection of books and magazines',
-                'whatsapp_number' => '+201007890123',
-                'phone_number' => '+201007890123',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Accessory World',
-                'description' => 'Stylish accessories for every style',
-                'whatsapp_number' => '+201008901234',
-                'phone_number' => '+201008901234',
-                'is_active' => true,
+                'products_count' => 30,
             ],
         ];
 
-        $availableLocations = $locations->shuffle();
-        $locationIndex = 0;
-
-        foreach ($shops as $index => $shopData) {
-            // Ensure we have enough locations
-            if ($locationIndex >= $availableLocations->count()) {
-                $this->command->warn('Not enough locations for all shops. Creating additional locations...');
-                break;
-            }
-
-            Shop::create([
+        foreach ($shops as $shopData) {
+            $shop = Shop::create([
                 'owner_id' => $vendors->random()->id,
-                'location_id' => $availableLocations[$locationIndex]->id,
+                'location_id' => Location::factory()->create(['city_id' => 1])->id,
                 'name' => $shopData['name'],
                 'slug' => \Illuminate\Support\Str::slug($shopData['name']),
                 'description' => $shopData['description'],
@@ -102,12 +77,51 @@ class ShopSeeder extends Seeder
                 'is_active' => $shopData['is_active'],
             ]);
 
-            $locationIndex++;
+            $this->command->info("Creating {$shopData['products_count']} products for {$shop->name}...");
+
+            // Create products for this shop
+            for ($i = 1; $i <= $shopData['products_count']; $i++) {
+                $price = rand(50, 2000);
+                $hasDiscount = rand(1, 100) <= 40; // 40% chance of discount
+                $productName = fake()->words(rand(2, 4), true) . ' ' . $shop->name . ' ' . $i;
+                
+                $product = Product::create([
+                    'shop_id' => $shop->id,
+                    'subcategory_id' => $subcategories->random()->id,
+                    'name' => $productName,
+                    'slug' => \Illuminate\Support\Str::slug($productName) . '-' . uniqid(),
+                    'description' => fake()->sentence(rand(10, 20)),
+                    'price' => $price,
+                    'stock_quantity' => rand(0, 100),
+                    'is_active' => rand(1, 100) <= 90, // 90% active
+                    'discount_type' => $hasDiscount ? (rand(0, 1) ? 'percent' : 'amount') : null,
+                    'discount_value' => $hasDiscount ? ($hasDiscount && rand(0, 1) ? rand(5, 50) : rand(10, 200)) : null,
+                ]);
+
+                // Attach random attributes
+                $attributeIds = collect([
+                    $sizes->isNotEmpty() ? $sizes->random() : null,
+                    $colors->isNotEmpty() ? $colors->random() : null,
+                    $genders->isNotEmpty() && rand(0, 1) ? $genders->random() : null,
+                    $materials->isNotEmpty() && rand(0, 1) ? $materials->random() : null,
+                    $conditions->isNotEmpty() && rand(0, 1) ? $conditions->random() : null,
+                ])->filter()->unique()->values();
+
+                if ($attributeIds->isNotEmpty()) {
+                    $product->attributeValues()->attach($attributeIds);
+                }
+
+                // Create product stats
+                ProductStats::create([
+                    'product_id' => $product->id,
+                    'views_count' => rand(0, 500),
+                    'whatsapp_clicks' => rand(0, 50),
+                    'favorites_count' => rand(0, 100),
+                    'last_viewed_at' => rand(0, 1) ? now()->subDays(rand(0, 30)) : null,
+                ]);
+            }
         }
 
-        // Create additional random shops in local/testing environments
-        if (app()->environment(['local', 'testing'])) {
-            Shop::factory()->count(12)->create();
-        }
+        $this->command->info('✅ Shops and products created successfully!');
     }
 }

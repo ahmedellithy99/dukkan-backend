@@ -43,16 +43,10 @@ class DatabaseSeeder extends Seeder
             AttributeSeeder::class,
         ]);
 
-        // 5. Seed shops
-        $this->command->info('🏪 Seeding shops...');
+        // 5. Seed shops with products
+        $this->command->info('🏪 Seeding shops and products...');
         $this->call([
             ShopSeeder::class,
-        ]);
-
-        // 6. Seed products with attributes and stats
-        $this->command->info('📦 Seeding products...');
-        $this->call([
-            ProductSeeder::class,
         ]);
 
         $this->command->info('✅ Database seeding completed successfully!');
