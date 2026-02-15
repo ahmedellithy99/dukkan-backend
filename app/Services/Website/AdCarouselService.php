@@ -12,6 +12,6 @@ class AdCarouselService
      */
     public function getActiveAdCarousels(): Collection
     {
-        return AdCarousel::ordered()->get();
+        return AdCarousel::with('media')->ordered()->get();
     }
 }

@@ -34,7 +34,7 @@ class AdCarouselService
     {
         return DB::transaction(function () use ($data) {
             $maxDisplayOrder = AdCarousel::max('display_order') ?? -1;
-            $adCarousel = AdCarousel::create(['title' => $data['title'], 'display_order' => $maxDisplayOrder + 1]);
+            $adCarousel = AdCarousel::create(['title' => $data['title'] ,'link_url' => $data['link_url'], 'display_order' => $maxDisplayOrder + 1]);
 
             $adCarousel->addMediaFromRequest('carousel_image')
                 ->toMediaCollection('carousel_image');
