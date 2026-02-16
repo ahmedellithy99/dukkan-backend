@@ -89,4 +89,11 @@ class ProductController extends Controller
 
         return response()->api(['message' => 'Location click tracked successfully']);
     }
+
+    public function trackViewClick(Product $product): JsonResponse
+    {
+        $this->statsService->trackView($product);
+
+        return response()->api(['message' => 'Product click tracked successfully']);
+    }
 }

@@ -44,5 +44,6 @@ Route::middleware('city.resolve')->group(function () {
 Route::middleware('throttle:analytics')->group(function () {
     Route::post('products/{product}/track/whatsapp', [ProductController::class, 'trackWhatsAppClick']);
     Route::post('products/{product}/track/location', [ProductController::class, 'trackLocationClick']);
+    Route::post('products/{product}/track/view', [ProductController::class, 'trackViewClick']);
 });
 
