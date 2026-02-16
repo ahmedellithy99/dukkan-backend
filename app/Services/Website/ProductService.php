@@ -19,7 +19,7 @@ class ProductService
     {
         $query = Product::query()
             ->select('products.*')
-            ->with(['media'])
+            ->with(['media', 'shop.location'])
             ->where('products.is_active', true);
 
         // Filter by city if provided via X-City header
