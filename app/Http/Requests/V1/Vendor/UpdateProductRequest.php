@@ -30,6 +30,8 @@ class UpdateProductRequest extends FormRequest
             'is_active' => 'sometimes|boolean',
             'main_image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:4048',
             'secondary_image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:4048',
+            'attribute_values' => 'nullable|array',
+            'attribute_values.*' => 'exists:attribute_values,id',
         ];
     }
 

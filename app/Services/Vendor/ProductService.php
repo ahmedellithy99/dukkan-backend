@@ -56,6 +56,11 @@ class ProductService
                 'discount_value' => $data['discount_value'] ?? null,
             ]);
 
+            // Attach attribute values if provided
+            if (isset($data['attribute_values']) && is_array($data['attribute_values'])) {
+                $product->attributeValues()->sync($data['attribute_values']);
+            }
+
             if (request()->hasFile('main_image')) {
                 $product->addMediaFromRequest('main_image')
                     ->toMediaCollection('main_image');
@@ -66,7 +71,7 @@ class ProductService
                     ->toMediaCollection('secondary_image');
             }
 
-            return $product->load(['shop', 'subcategory.category', 'media']);
+            return $product->load(['shop', 'subcategory.category', 'attributeValues.attribute', 'media']);
         });
     }
 
@@ -91,6 +96,11 @@ class ProductService
                 'discount_value' => $data['discount_value'] ?? $product->discount_value,
             ]);
 
+            // Update attribute values if provided
+            if (isset($data['attribute_values']) && is_array($data['attribute_values'])) {
+                $product->attributeValues()->sync($data['attribute_values']);
+            }
+
             if (isset($data['main_image'])) {
                 $product->addMediaFromRequest('main_image')
                     ->toMediaCollection('main_image'); 
@@ -101,7 +111,7 @@ class ProductService
                     ->toMediaCollection('secondary_image');
             }
 
-            return $product->refresh()->load(['shop', 'subcategory.category', 'media']);
+            return $product->refresh()->load(['shop', 'subcategory.category', 'attributeValues.attribute', 'media']);
         });
     }
 
