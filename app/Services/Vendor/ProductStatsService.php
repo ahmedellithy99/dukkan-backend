@@ -3,6 +3,7 @@
 namespace App\Services\Vendor;
 
 use App\Models\Product;
+use App\Models\ProductActivity;
 use App\Models\ProductStats;
 
 class ProductStatsService
@@ -33,6 +34,14 @@ class ProductStatsService
         $stats->increment('views_count');
         $stats->update(['last_viewed_at' => now()]);
 
+        // Create activity record
+        ProductActivity::create([
+            'product_id' => $product->id,
+            'activity_type' => 'view',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
         return $stats->refresh();
     }
 
@@ -53,6 +62,14 @@ class ProductStatsService
 
         $stats->increment('whatsapp_clicks');
 
+        // Create activity record
+        ProductActivity::create([
+            'product_id' => $product->id,
+            'activity_type' => 'whatsapp_click',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
         return $stats->refresh();
     }
 
@@ -72,6 +89,14 @@ class ProductStatsService
         );
 
         $stats->increment('location_clicks');
+
+        // Create activity record
+        ProductActivity::create([
+            'product_id' => $product->id,
+            'activity_type' => 'location_click',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
 
         return $stats->refresh();
     }

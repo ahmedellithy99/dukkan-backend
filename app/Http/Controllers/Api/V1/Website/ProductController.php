@@ -43,7 +43,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        // Track view
+        // Track view (also creates activity record)
         $this->statsService->trackView($product);
 
         $product = $this->productService->getProduct($product);
@@ -72,6 +72,7 @@ class ProductController extends Controller
      */
     public function trackWhatsAppClick(Product $product): JsonResponse
     {
+        // Track WhatsApp click (also creates activity record)
         $this->statsService->trackWhatsAppClick($product);
 
         return response()->api(['message' => 'WhatsApp click tracked successfully']);
@@ -85,6 +86,7 @@ class ProductController extends Controller
      */
     public function trackLocationClick(Product $product): JsonResponse
     {
+        // Track location click (also creates activity record)
         $this->statsService->trackLocationClick($product);
 
         return response()->api(['message' => 'Location click tracked successfully']);
@@ -92,6 +94,7 @@ class ProductController extends Controller
 
     public function trackViewClick(Product $product): JsonResponse
     {
+        // Track view (also creates activity record)
         $this->statsService->trackView($product);
 
         return response()->api(['message' => 'Product click tracked successfully']);
