@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Vendor\AuthController;
+use App\Http\Controllers\Api\V1\Vendor\DashboardController;
 use App\Http\Controllers\Api\V1\Vendor\LocationController;
 use App\Http\Controllers\Api\V1\Vendor\ProductController;
 use App\Http\Controllers\Api\V1\Vendor\ProductStatsController;
@@ -43,6 +44,9 @@ Route::prefix('vendor')->group(function () {
         Route::put('my-shop/{shop}/products/{product}/stock', [ProductController::class, 'updateStock'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/apply-discount', [ProductController::class, 'applyDiscount'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/remove-discount', [ProductController::class, 'removeDiscount'])->scopeBindings();
+
+        // Dashboard statistics
+        Route::get('dashboard/stats', [DashboardController::class, 'stats']);
 
         // Product analytics
         Route::get('products/{product}/stats', [ProductStatsController::class, 'show']);
