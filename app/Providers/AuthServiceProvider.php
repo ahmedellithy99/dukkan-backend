@@ -10,11 +10,13 @@ use App\Models\Location;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Subcategory;
+use App\Models\User;
 use App\Policies\Admin\AdCarouselPolicy;
 use App\Policies\Admin\AttributePolicy;
 use App\Policies\Admin\AttributeValuePolicy;
 use App\Policies\Admin\CategoryPolicy;
 use App\Policies\Admin\SubcategoryPolicy;
+use App\Policies\Vendor\DashboardPolicy;
 use App\Policies\Vendor\LocationPolicy;
 use App\Policies\Vendor\ProductPolicy;
 use App\Policies\Vendor\ShopPolicy;
@@ -36,6 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         Attribute::class => AttributePolicy::class,
         AttributeValue::class => AttributeValuePolicy::class,
         AdCarousel::class => AdCarouselPolicy::class,
+        User::class => DashboardPolicy::class,
     ];
 
     /**

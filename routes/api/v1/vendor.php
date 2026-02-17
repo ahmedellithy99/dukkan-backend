@@ -47,6 +47,7 @@ Route::prefix('vendor')->group(function () {
 
         // Dashboard statistics
         Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+        Route::get('dashboard/recent-activity', [DashboardController::class, 'recentActivity']);
 
         // Product analytics
         Route::get('products/{product}/stats', [ProductStatsController::class, 'show']);

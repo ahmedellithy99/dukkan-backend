@@ -3,6 +3,7 @@
 namespace App\Services\Vendor;
 
 use App\Models\Product;
+use App\Models\ProductActivity;
 use App\Models\ProductStats;
 use App\Models\Shop;
 use App\Models\User;
@@ -133,4 +134,33 @@ class DashboardService
 
         return round((($current - $previous) / $previous) * 100, 2);
     }
+
+    /**
+     * Get recent activity feed for a vendor's products.
+     *
+     * Returns chronological list of customer interactions with vendor's products,
+     * filtered by timeframe and limited to recent activities.
+     *
+     * @param User $vendor The vendor user
+     * @param int $days Number of days to look back (default 7)
+     * @param int $limit Maximum number of activities to return (default 50)
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getRecentActivity(User $vendor, int $days = 7, int $limit = 50)
+    {
+        // Get all shops owned by vendor
+        $shopIds = Shop::where('owner_id', $vendor->id)->pluck('id');
+        
+        // Get all products from vendor's shops
+        $productIds = Product::whereIn('shop_id', $shopIds)->pluck('id');
+
+        // Get recent activities with product details
+        return ProductActivity::with(['product.shop'])
+            ->whereIn('product_id', $productIds)
+            ->where('created_at', '>=', now()->subDays($days))
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }
+
