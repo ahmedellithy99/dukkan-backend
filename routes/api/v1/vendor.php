@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Vendor\AuthController;
 use App\Http\Controllers\Api\V1\Vendor\DashboardController;
 use App\Http\Controllers\Api\V1\Vendor\LocationController;
 use App\Http\Controllers\Api\V1\Vendor\ProductController;
+use App\Http\Controllers\Api\V1\Vendor\ProductImageController;
 use App\Http\Controllers\Api\V1\Vendor\ProductStatsController;
 use App\Http\Controllers\Api\V1\Vendor\ShopController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,11 @@ Route::prefix('vendor')->group(function () {
         Route::put('my-shop/{shop}/products/{product}/stock', [ProductController::class, 'updateStock'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/apply-discount', [ProductController::class, 'applyDiscount'])->scopeBindings();
         Route::put('my-shop/{shop}/products/{product}/remove-discount', [ProductController::class, 'removeDiscount'])->scopeBindings();
+
+        // Product image management
+        Route::post('my-shop/{shop}/products/{product}/images', [ProductImageController::class, 'store'])->scopeBindings();
+        Route::delete('my-shop/{shop}/products/{product}/images/{media}', [ProductImageController::class, 'destroy'])->scopeBindings();
+        Route::put('my-shop/{shop}/products/{product}/images/reorder', [ProductImageController::class, 'reorder'])->scopeBindings();
 
         // Dashboard statistics
         Route::get('dashboard/stats', [DashboardController::class, 'stats']);
