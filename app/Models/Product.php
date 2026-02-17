@@ -78,6 +78,11 @@ class Product extends Model implements HasMedia
         return $this->hasOne(ProductStats::class);
     }
 
+    public function activities()
+    {
+        return $this->hasMany(ProductActivity::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
