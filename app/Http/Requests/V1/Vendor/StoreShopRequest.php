@@ -41,9 +41,6 @@ class StoreShopRequest extends FormRequest
             'area' => 'required|string|max:255|min:3',
             'latitude' => 'required|numeric|between:22,32', // Egypt bounds
             'longitude' => 'required|numeric|between:25,37', // Egypt bounds
-
-            // media attributes
-            'logo' => 'required|image|mimes:jpeg,jpg,png,webp|max:4048', // 4MB max
         ];
     }
 
@@ -63,9 +60,6 @@ class StoreShopRequest extends FormRequest
             'whatsapp_number.regex' => 'WhatsApp number must be a valid Egyptian mobile number.',
             'phone_number.required' => 'Phone number is required.',
             'phone_number.regex' => 'Phone number must be a valid Egyptian mobile number.',
-            'logo.image' => 'Logo must be an image file.',
-            'logo.mimes' => 'Logo must be a JPEG, JPG, PNG, or WebP image.',
-            'logo.max' => 'Logo file size cannot exceed 2MB.',
             'city_id.required' => 'City is required.',
             'city_id.exists' => 'Selected city does not exist.',
             'area.required' => 'Area is required.',

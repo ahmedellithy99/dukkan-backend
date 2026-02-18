@@ -3,7 +3,6 @@
 namespace App\Http\Requests\V1\Vendor;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateShopRequest extends FormRequest
 {
@@ -42,9 +41,6 @@ class UpdateShopRequest extends FormRequest
             'area' => 'sometimes|string|max:255|min:3',
             'latitude' => 'sometimes|numeric|between:22,32', // Egypt bounds
             'longitude' => 'sometimes|numeric|between:25,37', // Egypt bounds
-
-            // media attributes
-            'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4048', // 2MB max
         ];
     }
 
@@ -68,9 +64,6 @@ class UpdateShopRequest extends FormRequest
             'latitude.between' => 'Latitude must be within Egypt bounds (22-32).',
             'longitude.required' => 'Longitude is required.',
             'longitude.between' => 'Longitude must be within Egypt bounds (25-37).',
-            'logo.image' => 'Logo must be an image file.',
-            'logo.mimes' => 'Logo must be a JPEG, JPG, PNG, or WebP image.',
-            'logo.max' => 'Logo file size cannot exceed 2MB.',
         ];
     }
 }

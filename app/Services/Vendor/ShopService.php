@@ -56,13 +56,6 @@ class ShopService
                 'phone_number' => $data['phone_number'],
             ]);
 
-            // Handle logo upload if provided
-            if (isset($data['logo']) && $data['logo']) {
-                $shop->addMediaFromRequest('logo')
-                    ->usingFileName('logo.webp')
-                    ->toMediaCollection('logo');
-            }
-
             return $shop->load(['location.city.governorate', 'owner', 'media']);
         });
     }
@@ -90,20 +83,6 @@ class ShopService
 
                 // Remove location fields from shop data
                 unset($data['city_id'], $data['area'], $data['latitude'], $data['longitude']);
-            }
-
-            // Handle logo update if provided
-            if (isset($data['logo']) && $data['logo']) {
-                // Clear existing logo first
-                $shop->clearMediaCollection('logo');
-
-                // Add new logo
-                $shop->addMediaFromRequest('logo')
-                    ->usingFileName('logo.webp')
-                    ->toMediaCollection('logo');
-
-                // Remove logo from data array
-                unset($data['logo']);
             }
 
             // Update shop with remaining data
