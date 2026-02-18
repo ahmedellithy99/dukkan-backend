@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Api\V1\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Vendor\UploadProductImageRequest;
-use App\Http\Requests\V1\Vendor\ReorderProductImagesRequest;
 use App\Http\Resources\V1\MediaResource;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Services\Vendor\ProductImageService;
 use Illuminate\Http\JsonResponse;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductImageController extends Controller
 {
@@ -22,48 +20,64 @@ class ProductImageController extends Controller
     }
 
     /**
-     * Upload product images
+     * Upload main product image
      */
-    public function store(Shop $shop, Product $product, UploadProductImageRequest $request): JsonResponse
+    public function storeMain(Shop $shop, Product $product, UploadProductImageRequest $request): JsonResponse
     {
         $this->authorize('update', $product);
 
-        $uploadedMedia = $this->productImageService->uploadImages(
+        $media = $this->productImageService->uploadMainImage(
             $product,
-            $request->file('images')
+            $request->file('image')
         );
 
-        return response()->api(MediaResource::collection($uploadedMedia), 201);
+        return response()->api(new MediaResource($media), 201);
     }
 
     /**
-     * Delete a product image
+     * Upload secondary product image
      */
-    public function destroy(Shop $shop, Product $product, Media $media): JsonResponse
+    public function storeSecondary(Shop $shop, Product $product, UploadProductImageRequest $request): JsonResponse
     {
         $this->authorize('update', $product);
 
-        $deleted = $this->productImageService->deleteImage($product, $media);
+        $media = $this->productImageService->uploadSecondaryImage(
+            $product,
+            $request->file('image')
+        );
+
+        return response()->api(new MediaResource($media), 201);
+    }
+
+    /**
+     * Delete main product image
+     */
+    public function destroyMain(Shop $shop, Product $product)
+    {
+        $this->authorize('update', $product);
+
+        $deleted = $this->productImageService->deleteMainImage($product);
 
         if (!$deleted) {
-            return response()->api(null, 404, [], 'Image does not belong to this product');
+            return response()->api(['message' => 'Main image not found'], 404);
         }
 
         return response()->api(null, 204);
     }
 
     /**
-     * Reorder product images
+     * Delete secondary product image
      */
-    public function reorder(Shop $shop, Product $product, ReorderProductImagesRequest $request): JsonResponse
+    public function destroySecondary(Shop $shop, Product $product)
     {
         $this->authorize('update', $product);
 
-        $orderedImages = $this->productImageService->reorderImages(
-            $product,
-            $request->input('order')
-        );
+        $deleted = $this->productImageService->deleteSecondaryImage($product);
 
-        return response()->api(MediaResource::collection($orderedImages));
+        if (!$deleted) {
+            return response()->api(['message' => 'Secondary image not found'], 404);
+        }
+
+        return response()->api(null, 204);
     }
 }

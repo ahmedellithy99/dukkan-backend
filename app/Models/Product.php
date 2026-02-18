@@ -109,7 +109,6 @@ class Product extends Model implements HasMedia
     {
         $this->addMediaCollection('main_image')->singleFile()->useDisk('public');
         $this->addMediaCollection('secondary_image')->singleFile()->useDisk('public');
-        $this->addMediaCollection('product_images')->useDisk('public');
     }
 
     public function registerMediaConversions(Media $media = null): void
@@ -118,14 +117,14 @@ class Product extends Model implements HasMedia
             ->fit(Fit::Crop, 400, 400)
             ->format('webp')
             ->quality(80)
-            ->performOnCollections('main_image', 'secondary_image', 'product_images')
+            ->performOnCollections('main_image', 'secondary_image')
             ->nonQueued();
 
         $this->addMediaConversion('large')
             ->fit(Fit::Max, 1400, 1400)
             ->format('webp')
             ->quality(82)
-            ->performOnCollections('main_image', 'secondary_image', 'product_images')
+            ->performOnCollections('main_image', 'secondary_image')
             ->nonQueued();
     }
 

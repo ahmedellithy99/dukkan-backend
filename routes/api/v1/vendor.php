@@ -52,9 +52,10 @@ Route::prefix('vendor')->group(function () {
         Route::put('my-shop/{shop}/products/{product}/remove-discount', [ProductController::class, 'removeDiscount'])->scopeBindings();
 
         // Product image management
-        Route::post('my-shop/{shop}/products/{product}/images', [ProductImageController::class, 'store'])->scopeBindings();
-        Route::delete('my-shop/{shop}/products/{product}/images/{media}', [ProductImageController::class, 'destroy'])->scopeBindings();
-        Route::put('my-shop/{shop}/products/{product}/images/reorder', [ProductImageController::class, 'reorder'])->scopeBindings();
+        Route::post('my-shop/{shop}/products/{product}/images/main', [ProductImageController::class, 'storeMain'])->scopeBindings();
+        Route::post('my-shop/{shop}/products/{product}/images/secondary', [ProductImageController::class, 'storeSecondary'])->scopeBindings();
+        Route::delete('my-shop/{shop}/products/{product}/images/main', [ProductImageController::class, 'destroyMain'])->scopeBindings();
+        Route::delete('my-shop/{shop}/products/{product}/images/secondary', [ProductImageController::class, 'destroySecondary'])->scopeBindings();
 
         // Dashboard statistics
         Route::get('dashboard/stats', [DashboardController::class, 'stats']);

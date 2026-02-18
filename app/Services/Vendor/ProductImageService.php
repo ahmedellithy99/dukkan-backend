@@ -4,82 +4,73 @@ namespace App\Services\Vendor;
 
 use App\Models\Product;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProductImageService
 {
     /**
-     * Upload multiple images to a product
+     * Upload main product image
      *
      * @param Product $product
-     * @param array $images
-     * @return Collection
+     * @param UploadedFile $image
+     * @return Media
      */
-    public function uploadImages(Product $product, array $images): Collection
+    public function uploadMainImage(Product $product, UploadedFile $image): Media
     {
-        $uploadedMedia = collect();
-        $currentMaxOrder = $product->getMedia('product_images')->max('order_column') ?? -1;
-
-        foreach ($images as $index => $image) {
-            $media = $product->addMedia($image)
-                ->withCustomProperties([
-                    'order' => $currentMaxOrder + $index + 1,
-                ])
-                ->toMediaCollection('product_images');
-            
-            $uploadedMedia->push($media);
-        }
-
-        return $uploadedMedia;
+        // Spatie's singleFile() collection automatically replaces existing image
+        return $product->addMedia($image)
+            ->toMediaCollection('main_image');
     }
 
     /**
-     * Delete a product image
+     * Upload secondary product image
      *
      * @param Product $product
-     * @param Media $media
+     * @param UploadedFile $image
+     * @return Media
+     */
+    public function uploadSecondaryImage(Product $product, UploadedFile $image): Media
+    {
+        // Spatie's singleFile() collection automatically replaces existing image
+        return $product->addMedia($image)
+            ->toMediaCollection('secondary_image');
+    }
+
+    /**
+     * Delete main product image
+     *
+     * @param Product $product
      * @return bool
      */
-    public function deleteImage(Product $product, Media $media): bool
+    public function deleteMainImage(Product $product): bool
     {
-        // Verify media belongs to this product
-        if ($media->model_id !== $product->id || $media->model_type !== Product::class) {
+        $image = $product->getFirstMedia('main_image');
+
+        if (!$image) {
             return false;
         }
 
-        // Delete the media (Spatie handles file deletion automatically)
-        $media->delete();
+        $image->delete();
 
         return true;
     }
 
     /**
-     * Reorder product images
+     * Delete secondary product image
      *
      * @param Product $product
-     * @param array $orderData
-     * @return Collection
+     * @return bool
      */
-    public function reorderImages(Product $product, array $orderData): Collection
+    public function deleteSecondaryImage(Product $product): bool
     {
-        foreach ($orderData as $item) {
-            $media = Media::find($item['id']);
-            
-            // Skip if media doesn't belong to this product
-            if (!$media || $media->model_id !== $product->id || $media->model_type !== Product::class) {
-                continue;
-            }
+        $image = $product->getFirstMedia('secondary_image');
 
-            $media->setCustomProperty('order', $item['order']);
-            $media->save();
+        if (!$image) {
+            return false;
         }
 
-        $product->refresh();
-        
-        return $product->getMedia('product_images')
-            ->sortBy(function ($media) {
-                return $media->getCustomProperty('order', 0);
-            });
+        $image->delete();
+
+        return true;
     }
 }

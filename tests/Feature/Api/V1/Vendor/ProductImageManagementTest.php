@@ -4,236 +4,191 @@ namespace Tests\Feature\Api\V1\Vendor;
 
 use App\Models\Product;
 use App\Models\Shop;
-use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tests\TestCase;
 
 class ProductImageManagementTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
-    // protected function setUp(): void
-    // {
-    //     parent::setUp();
-    //     Storage::fake('public');
-    // }
+    protected User $vendor;
+    protected Shop $shop;
+    protected Product $product;
 
-    // public function test_vendor_can_upload_product_images()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-    //     $images = [
-    //         UploadedFile::fake()->image('product1.jpg'),
-    //         UploadedFile::fake()->image('product2.jpg'),
-    //     ];
+        Storage::fake('public');
 
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->postJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images", [
-    //             'images' => $images,
-    //         ]);
+        $this->vendor = User::factory()->vendor()->create();
+        $this->shop = Shop::factory()->for($this->vendor, 'owner')->create();
+        $this->product = Product::factory()->for($this->shop)->create();
+    }
 
-    //     $response->assertStatus(201)
-    //         ->assertJson([
-    //             'success' => true,
-    //             'message' => 'Images uploaded successfully',
-    //         ]);
+    /** @test */
+    public function vendor_can_upload_main_image()
+    {
+        $image = UploadedFile::fake()->image('main.jpg', 800, 600);
 
-    //     $this->assertEquals(2, $product->fresh()->getMedia('product_images')->count());
-    // }
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/main", [
+                'image' => $image,
+            ]);
 
-    // public function test_vendor_cannot_upload_images_to_another_vendors_product()
-    // {
-    //     $vendor1 = User::factory()->create(['role' => 'vendor']);
-    //     $vendor2 = User::factory()->create(['role' => 'vendor']);
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'success',
+                'data' => ['id', 'file_name', 'mime_type', 'size'],
+            ]);
+
+        $this->assertNotNull($this->product->fresh()->getFirstMedia('main_image'));
+    }
+
+    /** @test */
+    public function vendor_can_upload_secondary_image()
+    {
+        $image = UploadedFile::fake()->image('secondary.jpg', 800, 600);
+
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/secondary", [
+                'image' => $image,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure([
+                'success',
+                'data' => ['id', 'file_name', 'mime_type', 'size'],
+            ]);
+
+        $this->assertNotNull($this->product->fresh()->getFirstMedia('secondary_image'));
+    }
+
+    /** @test */
+    public function vendor_can_replace_main_image()
+    {
+        // Upload initial main image
+        $initialImage = UploadedFile::fake()->image('initial.jpg');
+        $this->product->addMedia($initialImage)->toMediaCollection('main_image');
+        $initialMediaId = $this->product->getFirstMedia('main_image')->id;
+
+        // Replace with new image
+        $newImage = UploadedFile::fake()->image('new.jpg');
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/main", [
+                'image' => $newImage,
+            ]);
+
+        $response->assertStatus(201);
+
+        $this->product->refresh();
+        $currentMedia = $this->product->getFirstMedia('main_image');
         
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor1->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+        $this->assertNotNull($currentMedia);
+        $this->assertNotEquals($initialMediaId, $currentMedia->id);
+    }
 
-    //     $images = [
-    //         UploadedFile::fake()->image('product1.jpg'),
-    //     ];
+    /** @test */
+    public function vendor_can_replace_secondary_image()
+    {
+        // Upload initial secondary image
+        $initialImage = UploadedFile::fake()->image('initial.jpg');
+        $this->product->addMedia($initialImage)->toMediaCollection('secondary_image');
+        $initialMediaId = $this->product->getFirstMedia('secondary_image')->id;
 
-    //     $response = $this->actingAs($vendor2, 'sanctum')
-    //         ->postJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images", [
-    //             'images' => $images,
-    //         ]);
+        // Replace with new image
+        $newImage = UploadedFile::fake()->image('new.jpg');
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/secondary", [
+                'image' => $newImage,
+            ]);
 
-    //     $response->assertStatus(403);
-    // }
+        $response->assertStatus(201);
 
-    // public function test_image_upload_validates_file_types()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
-
-    //     $invalidFile = UploadedFile::fake()->create('document.pdf', 100);
-
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->post("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images", [
-    //             'images' => [$invalidFile],
-    //         ]);
-
-    //     $response->assertStatus(422);
-    // }
-
-    // public function test_vendor_can_delete_product_image()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
-
-    //     $file = UploadedFile::fake()->image('product.jpg');
-    //     $media = $product->addMedia($file)->toMediaCollection('product_images');
-
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->deleteJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images/{$media->id}");
-
-    //     $response->assertStatus(200)
-    //         ->assertJson([
-    //             'success' => true,
-    //             'message' => 'Image deleted successfully',
-    //         ]);
-
-    //     $this->assertEquals(0, $product->fresh()->getMedia('product_images')->count());
-    //     $this->assertDatabaseMissing('media', ['id' => $media->id]);
-    // }
-
-    // public function test_vendor_cannot_delete_another_products_image()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
+        $this->product->refresh();
+        $currentMedia = $this->product->getFirstMedia('secondary_image');
         
-    //     $product1 = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
-        
-    //     $product2 = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+        $this->assertNotNull($currentMedia);
+        $this->assertNotEquals($initialMediaId, $currentMedia->id);
+    }
 
-    //     $file = UploadedFile::fake()->image('product.jpg');
-    //     $media = $product2->addMedia($file)->toMediaCollection('product_images');
+    /** @test */
+    public function vendor_can_delete_main_image()
+    {
+        $image = UploadedFile::fake()->image('main.jpg');
+        $this->product->addMedia($image)->toMediaCollection('main_image');
 
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->deleteJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product1->slug}/images/{$media->id}");
+        $response = $this->actingAs($this->vendor)
+            ->deleteJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/main");
 
-    //     $response->assertStatus(404);
-    //     $this->assertEquals(1, $product2->fresh()->getMedia('product_images')->count());
-    // }
+        $response->assertStatus(204);
+        $this->assertNull($this->product->fresh()->getFirstMedia('main_image'));
+    }
 
-    // public function test_vendor_can_reorder_product_images()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+    /** @test */
+    public function vendor_can_delete_secondary_image()
+    {
+        $image = UploadedFile::fake()->image('secondary.jpg');
+        $this->product->addMedia($image)->toMediaCollection('secondary_image');
 
-    //     // Upload 3 images
-    //     $media1 = $product->addMedia(UploadedFile::fake()->image('img1.jpg'))
-    //         ->withCustomProperties(['order' => 0])
-    //         ->toMediaCollection('product_images');
-        
-    //     $media2 = $product->addMedia(UploadedFile::fake()->image('img2.jpg'))
-    //         ->withCustomProperties(['order' => 1])
-    //         ->toMediaCollection('product_images');
-        
-    //     $media3 = $product->addMedia(UploadedFile::fake()->image('img3.jpg'))
-    //         ->withCustomProperties(['order' => 2])
-    //         ->toMediaCollection('product_images');
+        $response = $this->actingAs($this->vendor)
+            ->deleteJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/secondary");
 
-    //     // Reorder: swap first and last
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->putJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images/reorder", [
-    //             'order' => [
-    //                 ['id' => $media3->id, 'order' => 0],
-    //                 ['id' => $media2->id, 'order' => 1],
-    //                 ['id' => $media1->id, 'order' => 2],
-    //             ],
-    //         ]);
+        $response->assertStatus(204);
+        $this->assertNull($this->product->fresh()->getFirstMedia('secondary_image'));
+    }
 
-    //     $response->assertStatus(200)
-    //         ->assertJson([
-    //             'success' => true,
-    //             'message' => 'Images reordered successfully',
-    //         ]);
+    /** @test */
+    public function vendor_cannot_manage_images_for_other_vendors_products()
+    {
+        $otherVendor = User::factory()->vendor()->create();
+        $otherShop = Shop::factory()->for($otherVendor, 'owner')->create();
+        $otherProduct = Product::factory()->for($otherShop)->create();
 
-    //     // Verify new order
-    //     $product->refresh();
-    //     $reorderedMedia1 = Media::find($media1->id);
-    //     $reorderedMedia3 = Media::find($media3->id);
-        
-    //     $this->assertEquals(2, $reorderedMedia1->getCustomProperty('order'));
-    //     $this->assertEquals(0, $reorderedMedia3->getCustomProperty('order'));
-    // }
+        $image = UploadedFile::fake()->image('test.jpg');
 
-    // public function test_reorder_validates_required_fields()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+        // Try to upload main image - should get 403 Forbidden (not 404)
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$otherShop->slug}/products/{$otherProduct->slug}/images/main", [
+                'image' => $image,
+            ]);
 
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->putJson("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images/reorder", [
-    //             'order' => [],
-    //         ]);
+        $response->assertStatus(403);
+    }
 
-    //     $response->assertStatus(422);
-    // }
+    /** @test */
+    public function image_upload_requires_valid_image_file()
+    {
+        // Create a non-image file (text file)
+        $file = UploadedFile::fake()->create('document.txt', 100);
 
-    // public function test_upload_validates_maximum_images()
-    // {
-    //     $vendor = User::factory()->create(['role' => 'vendor']);
-    //     $shop = Shop::factory()->create(['owner_id' => $vendor->id]);
-    //     $subcategory = Subcategory::factory()->create();
-    //     $product = Product::factory()->create([
-    //         'shop_id' => $shop->id,
-    //         'subcategory_id' => $subcategory->id,
-    //     ]);
+        $response = $this->actingAs($this->vendor)
+            ->postJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/main", [
+                'image' => $file,
+            ]);
 
-    //     // Try to upload 11 images (max is 10)
-    //     $images = [];
-    //     for ($i = 0; $i < 11; $i++) {
-    //         $images[] = UploadedFile::fake()->image("product{$i}.jpg");
-    //     }
+        $response->assertStatus(422)
+            ->assertJsonPath('error.fields.image', fn($errors) => count($errors) > 0);
+    }
 
-    //     $response = $this->actingAs($vendor, 'sanctum')
-    //         ->post("/api/v1/vendor/my-shop/{$shop->slug}/products/{$product->slug}/images", [
-    //             'images' => $images,
-    //         ]);
+    /** @test */
+    public function deleting_non_existent_main_image_returns_404()
+    {
+        $response = $this->actingAs($this->vendor)
+            ->deleteJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/main");
 
-    //     $response->assertStatus(422);
-    // }
+        $response->assertStatus(404);
+    }
+
+    /** @test */
+    public function deleting_non_existent_secondary_image_returns_404()
+    {
+        $response = $this->actingAs($this->vendor)
+            ->deleteJson("/api/v1/vendor/my-shop/{$this->shop->slug}/products/{$this->product->slug}/images/secondary");
+
+        $response->assertStatus(404);
+    }
 }

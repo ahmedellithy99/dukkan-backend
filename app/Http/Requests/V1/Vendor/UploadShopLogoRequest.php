@@ -26,8 +26,8 @@ class UploadShopLogoRequest extends FormRequest
                 'required',
                 'image',
                 'mimes:jpeg,jpg,png,webp',
-                'max:2048', // 2MB max
-                'dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
+                'max:3048', // 3MB max
+                'dimensions:min_width=100,min_height=100,max_width=5000,max_height=6000',
             ],
         ];
     }

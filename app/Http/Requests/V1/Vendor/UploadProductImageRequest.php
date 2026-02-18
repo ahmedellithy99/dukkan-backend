@@ -22,12 +22,11 @@ class UploadProductImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'images' => ['required', 'array', 'min:1', 'max:10'],
-            'images.*' => [
+            'image' => [
                 'required',
                 'image',
                 'mimes:jpeg,jpg,png,webp',
-                'max:5120', // 5MB max per image
+                'max:5120', // 5MB max
             ],
         ];
     }
@@ -40,14 +39,10 @@ class UploadProductImageRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'images.required' => 'At least one image is required',
-            'images.array' => 'Images must be provided as an array',
-            'images.min' => 'At least one image is required',
-            'images.max' => 'You can upload a maximum of 10 images at once',
-            'images.*.required' => 'Each image file is required',
-            'images.*.image' => 'Each file must be a valid image',
-            'images.*.mimes' => 'Images must be in JPEG, JPG, PNG, or WebP format',
-            'images.*.max' => 'Each image must not exceed 5MB',
+            'image.required' => 'Image is required',
+            'image.image' => 'The file must be a valid image',
+            'image.mimes' => 'Image must be in JPEG, JPG, PNG, or WebP format',
+            'image.max' => 'Image must not exceed 5MB',
         ];
     }
 }

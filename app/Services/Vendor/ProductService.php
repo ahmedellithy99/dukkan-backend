@@ -61,16 +61,6 @@ class ProductService
                 $product->attributeValues()->sync($data['attribute_values']);
             }
 
-            if (request()->hasFile('main_image')) {
-                $product->addMediaFromRequest('main_image')
-                    ->toMediaCollection('main_image');
-            }
-
-            if (request()->hasFile('secondary_image')) {
-                $product->addMediaFromRequest('secondary_image')
-                    ->toMediaCollection('secondary_image');
-            }
-
             return $product->load(['shop', 'subcategory.category', 'attributeValues.attribute', 'media']);
         });
     }
@@ -99,16 +89,6 @@ class ProductService
             // Update attribute values if provided
             if (isset($data['attribute_values']) && is_array($data['attribute_values'])) {
                 $product->attributeValues()->sync($data['attribute_values']);
-            }
-
-            if (isset($data['main_image'])) {
-                $product->addMediaFromRequest('main_image')
-                    ->toMediaCollection('main_image'); 
-            }
-
-            if (isset($data['secondary_image'])) {
-                $product->addMediaFromRequest('secondary_image')
-                    ->toMediaCollection('secondary_image');
             }
 
             return $product->refresh()->load(['shop', 'subcategory.category', 'attributeValues.attribute', 'media']);

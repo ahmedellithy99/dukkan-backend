@@ -28,8 +28,6 @@ class UpdateProductRequest extends FormRequest
             'discount_value' => 'required_with:discount_type|numeric|min:0',
             'stock_quantity' => 'sometimes|integer|min:0',
             'is_active' => 'sometimes|boolean',
-            'main_image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:4048',
-            'secondary_image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:4048',
             'attribute_values' => 'nullable|array',
             'attribute_values.*' => 'exists:attribute_values,id',
         ];
@@ -52,10 +50,6 @@ class UpdateProductRequest extends FormRequest
             'discount_value.min' => 'Discount value cannot be negative.',
             'stock_quantity.integer' => 'Stock quantity must be a whole number.',
             'stock_quantity.min' => 'Stock quantity cannot be negative.',
-            'main_image.image' => 'Main image must be a valid image file (jpeg, png, jpg, webp).',
-            'main_image.max' => 'Main image size cannot exceed 4MB.',
-            'secondary_image.image' => 'Secondary image must be a valid image file (jpeg, png, jpg, webp).',
-            'secondary_image.max' => 'Secondary image size cannot exceed 4MB.',
             'is_active.boolean' => 'Active status must be true or false.',
         ];
     }
