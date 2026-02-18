@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Vendor\ProductController;
 use App\Http\Controllers\Api\V1\Vendor\ProductImageController;
 use App\Http\Controllers\Api\V1\Vendor\ProductStatsController;
 use App\Http\Controllers\Api\V1\Vendor\ShopController;
+use App\Http\Controllers\Api\V1\Vendor\ShopLogoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,10 @@ Route::prefix('vendor')->group(function () {
         Route::apiResource('/my-shops', ShopController::class);
         Route::post('my-shops/{shop}/restore', [ShopController::class, 'restore'])
             ->withTrashed();
+
+        // Shop logo management
+        Route::post('my-shops/{shop}/logo', [ShopLogoController::class, 'store']);
+        Route::delete('my-shops/{shop}/logo', [ShopLogoController::class, 'destroy']);
 
         //products    
         Route::apiResource('my-shop/{shop}/products', ProductController::class)->scoped();
