@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Vendor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\Vendor\ProductActivityResource;
 use App\Models\User;
 use App\Services\Vendor\DashboardService;
 use Illuminate\Http\JsonResponse;
@@ -70,7 +71,7 @@ class DashboardController extends Controller
         $activities = $this->dashboardService->getRecentActivity($vendor, $days, $limit);
 
         return response()->api([
-            'activities' => $activities,
+            'activities' => ProductActivityResource::collection($activities),
             'timeframe_days' => $days,
             'count' => $activities->count(),
         ]);
